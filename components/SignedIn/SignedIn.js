@@ -23,12 +23,9 @@ export default class SignedIn extends Component<props> {
 
     render () {
         return (
-            <View style={styles.outerView}>
+            <View style={styles.signedInView}>
                 <UserPic style={styles.pic}/>
-                <View style={styles.innerView}>
-                    <Text style={styles.description}>Signed in as </Text>
-                    <Text style={styles.name}>{this.state.userName}</Text>
-                </View>
+                <Text style={styles.name}>{this.state.userName}</Text>
             </View>
         );
     };

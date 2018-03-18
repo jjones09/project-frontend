@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import { AsyncStorage, StyleSheet, View} from 'react-native';
+import {AsyncStorage, StyleSheet, Text, View} from 'react-native';
 
 import SignedIn from "../components/SignedIn";
+import { colours } from "../components/common/styles";
 
-export default class SecondScreen extends Component<Props> {
+export default class Find extends Component<Props> {
     static navigationOptions = {
-        title: 'Second Screen',
+        title: 'Find',
         header: null
     };
 
@@ -13,18 +14,14 @@ export default class SecondScreen extends Component<Props> {
         super(props);
     };
 
-    state = {
-        name: ''
-    };
-
     render() {
-        AsyncStorage.getItem('userName').then(value => {
-            this.setState({'name': value});
-        });
 
         return (
             <View style={styles.container}>
-                <SignedIn />
+                <Text>
+                    Find page
+                </Text>
+
             </View>
         );
     }
@@ -34,6 +31,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 20,
-        backgroundColor: '#F5FCFF'
+        backgroundColor: colours.primaryBackground
     }
 });

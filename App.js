@@ -1,14 +1,13 @@
 import React from 'react';
-import { Text, View } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 import LoginScreen from './screens/LoginScreen';
-import SecondScreen from './screens/SignedInScreen';
+import HubScreen from './screens/HubScreen';
 
 const Navi = StackNavigator(
     {
         Login: { screen: LoginScreen },
-        Second: { screen: SecondScreen }
+        Hub: { screen: HubScreen }
     },
     { mode: 'modal' });
 

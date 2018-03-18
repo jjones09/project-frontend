@@ -1,27 +1,32 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { Text, TouchableOpacity } from 'react-native';
+
+let Toast = require('@remobile/react-native-toast');
+
 import styles from './styles';
+import { dev } from "../../config/apiURL";
 
-const Button = (props) => {
-    const { text, onPress } = props;
-    return (
-        <TouchableOpacity style={styles.button} onPress={onPress}>
-            <Text style={styles.buttonText}>
-                {text}
-            </Text>
-        </TouchableOpacity>
-    );
-};
+export default class Button extends Component<props> {
 
-Button.propTypes = {
-    text: PropTypes.string,
-    onPress: PropTypes.func
-};
+    constructor(props) {
+        super(props);
+    }
 
-Button.defaultProps = {
-    text: 'Button',
-    onPress: () => console.log('Button pressed')
-};
+    componentDidMount() {
+    }
 
-export default Button;
+    async fetchData() {
+    }
+
+    render() {
+
+    }
+
+    static propTypes = {
+        text: PropTypes.string
+    };
+
+    static defaultProps = {
+        text: 'Button'
+    };
+}

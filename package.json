@@ -8,12 +8,17 @@
     "android-linux": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && react-native run-android"
   },
   "dependencies": {
+    "@remobile/react-native-toast": "^1.0.7",
+    "npm": "^5.7.1",
     "prop-types": "^15.6.0",
     "react": "16.2.0",
     "react-native": "0.53.0",
     "react-native-cookies": "^3.2.0",
+    "react-native-elements": "^0.19.0",
     "react-native-fbsdk": "^0.7.0",
     "react-native-keychain": "^2.0.0",
+    "react-native-material-design-styles": "^0.2.7",
+    "react-native-vector-icons": "^4.5.0",
     "react-navigation": "^1.0.3",
     "util": "*"
   },

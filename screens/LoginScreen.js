@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { AsyncStorage, StyleSheet, View } from 'react-native';
-import { AccessToken, LoginManager } from 'react-native-fbsdk';
+import { StyleSheet, View } from 'react-native';
 
 import PlaysparkLogo from '../components/PlaysparkLogo';
-import Button from '../components/Button';
+import LoginButton from '../components/LoginButton';
+
+import { dev } from '../config/apiURL';
+import { colours} from "../components/common/styles";
 
 export default class LoginScreen extends Component<Props> {
     static navigationOptions = {
@@ -25,38 +27,7 @@ export default class LoginScreen extends Component<Props> {
         return (
             <View style={styles.container}>
                 <PlaysparkLogo />
-                <Button text="Log in with Facebook" onPress={() => {
-                    LoginManager.logInWithReadPermissions(['public_profile']).then((res) => {
-                            if (res.isCancelled) {
-                                console.log('Login cancelled');
-                            }
-                            else {
-                                console.log('Login successful. Permissions: %s', res.grantedPermissions.toString());
-                                AccessToken.getCurrentAccessToken().then((data) => {
-                                    console.log('Token obtained. Verifying with server');
-                                    let params = { accessToken: data.accessToken };
-
-                                    fetch('https://playspark.herokuapp.com/users/' + data.userID + '/get-token', {
-                                        method: 'POST',
-                                        body: JSON.stringify(params),
-                                        headers: new Headers({
-                                            'Content-Type': 'application/json'
-                                        })})
-                                        .then(res => res.json())
-                                        .then(res => {
-                                            console.log('Signed in as %s ', res.user);
-                                            AsyncStorage.setItem('userName', res.user);
-                                            AsyncStorage.setItem('uID', data.userID);
-                                            navigate('Second', {});
-                                        });
-                                    }
-                                )
-                            }
-                        },
-                        (err) => {
-                            console.log('Login failed. Error: %s', err);
-                        })
-                }} />
+                <LoginButton navigate={navigate} />
             </View>
         );
     }
@@ -67,6 +38,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF'
+        backgroundColor: colours.primaryBackground
     }
 });
