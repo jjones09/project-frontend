@@ -9,11 +9,12 @@ import {config} from './config';
 
 export const Tabs = TabNavigator(
     {
-        Host: {
-            screen: Host
-        },
+
         Find: {
             screen: Find
+        },
+        Host: {
+            screen: Host
         },
         Profile: {
             screen: Profile
