@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Modal, View, Text, TouchableOpacity} from 'react-native';
+import { Modal, View, Text, TouchableOpacity} from 'react-native';
 import { Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
 
@@ -15,7 +15,7 @@ export default class ModalWrapper extends Component<Props> {
     render() {
         return (
             <Modal onRequestClose={() => console.log("Requesting modal close")} visible={this.props.vis}>
-                <View style={styles.container}>
+                <View style={styles.containerHead}>
                     <Text style={styles.title}>{this.props.title}</Text>
                     <TouchableOpacity style={styles.cancel} onPress={() => {
                         this.props.that.setState({showModal: false});}}>
@@ -24,6 +24,9 @@ export default class ModalWrapper extends Component<Props> {
                               size={cancelStyle.size}
                               color={cancelStyle.color}/>
                     </TouchableOpacity>
+                </View>
+                <View style={styles.containerContent}
+                >{this.props.contents}
                 </View>
             </Modal>
         );

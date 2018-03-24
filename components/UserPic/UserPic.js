@@ -3,6 +3,7 @@ import { AsyncStorage, Image } from 'react-native';
 import styles from './styles';
 
 import { dev } from '../../config/apiURL';
+import api from '../../lib/api-interface/apiInterface';
 
 export default class UserPic extends Component<props> {
 
@@ -24,18 +25,10 @@ export default class UserPic extends Component<props> {
             else {
                 console.log('Getting profile image from remote API');
                 AsyncStorage.getItem('uID').then((id) => {
-                    console.log('User ID is ' + id);
-                    fetch(dev + '/users/' + id + '/profile-pic', {
-                        method: 'GET',
-                        headers: new Headers({
-                            'Content-Type': 'application/json'
-                        })})
-                        .then(res => res.json())
-                        .then(res => {
-                            console.log(res);
-                            AsyncStorage.setItem('profileImgUrl', res.url);
-                            this.setState({url: res.url});
-                        });
+                    api.getUserProfilePic(id).then(res => {
+                        AsyncStorage.setItem('profileImgUrl', res.url);
+                        this.setState({url: res.url});
+                    });
                 });
             }
         });

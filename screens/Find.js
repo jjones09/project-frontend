@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 import {AsyncStorage, StyleSheet, Text, View} from 'react-native';
 
-import SignedIn from "../components/SignedIn";
 import { colours } from "../components/common/styles";
+import { Icon } from 'react-native-elements';
 
 export default class Find extends Component<Props> {
     static navigationOptions = {
         title: 'Find',
-        header: null
+        header: null,
+        tabBarIcon: (<Icon color='#FFF' name='magnifying-glass' type='entypo'/>)
     };
 
     constructor(props) {

@@ -7,13 +7,9 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    description: {
-        color: '#FFFFFF',
-        fontSize: 10
-    },
     name: {
         marginTop: 5,
-        color: '#FFF',
+        color: colours.primaryText,
         fontSize: 20,
         fontWeight: 'bold'
     }

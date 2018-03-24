@@ -3,21 +3,21 @@ import { colours } from '../common/styles';
 
 export default StyleSheet.create({
     buttonText: {
-        color: colours.buttonText,
+        color: colours.invertedButtonText,
         fontSize: 16,
         fontWeight: '500'
     },
     button: {
         paddingVertical: 10,
         paddingHorizontal: 20,
-        backgroundColor: colours.primaryButtonBackground,
+        backgroundColor: colours.invertedButtonBackground,
         margin: 5,
         borderRadius: 5
     },
     logOutButton: {
         paddingVertical: 10,
         paddingHorizontal: 20,
-        backgroundColor: colours.secondaryButtonBackground,
+        backgroundColor: colours.negativeButtonBackground,
         margin: 5,
         borderRadius: 5
     },

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
         backgroundColor: colours.primaryBackground
     },
     hostingText: {
-        color: '#FFF',
+        color: '#00FF00',
         fontSize: 16,
         fontWeight: 'bold'
     }

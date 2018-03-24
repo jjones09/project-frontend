@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colours } from '../common/styles';
 
 export default StyleSheet.create({
     image: {
@@ -6,6 +7,6 @@ export default StyleSheet.create({
         width: 80,
         borderRadius: 50,
         borderWidth: 2,
-        borderColor: '#FFF'
+        borderColor: colours.primaryText
     }
 });

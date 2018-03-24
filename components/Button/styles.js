@@ -3,7 +3,7 @@ import { colours } from '../common/styles';
 
 export default StyleSheet.create({
     buttonText: {
-        color: colours.buttonText,
+        color: colours.primaryButtonText,
         fontSize: 16,
         fontWeight: '500'
     },
