@@ -3,8 +3,11 @@ import { colours } from '../common/styles';
 
 export default StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center'
+        paddingTop: 10
+    },
+
+    section: {
+        marginBottom: 25
     },
 
     rowContainerStyle1: {
@@ -44,6 +47,12 @@ export default StyleSheet.create({
         fontSize: 18
     },
 
+    distLimitLabel: {
+        justifyContent: 'center',
+        color: colours.disabledText,
+        fontSize: 14
+    },
+
     switchBtn: {
         justifyContent: 'flex-end'
     },
@@ -53,5 +62,12 @@ export default StyleSheet.create({
         flexDirection: 'row',
         alignItems:'flex-start',
         justifyContent: 'center'
-    }
+    },
+
+    radiusVal: {
+        color: colours.primaryText,
+        fontSize: 20,
+        margin: 10,
+        textAlign: 'center'
+    },
 });

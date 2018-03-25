@@ -106,7 +106,8 @@ export default class LoginButton extends Component<props> {
             })
         }
         else {
-            Toast.showShortCenter('Your device is not connected to the internet. Please check your connection and try again.');
+            Toast.showShortCenter('Your device is not connected to the internet.' +
+                ' Please check your connection and try again.');
         }
     };
 

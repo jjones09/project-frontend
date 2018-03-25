@@ -20,7 +20,6 @@ export default class Host extends Component<Props> {
     };
 
     render() {
-
         return (
             <View style={styles.container}>
                 <ModalWrapper title='Create Event' that={this} vis={this.state.showModal} />
@@ -58,7 +57,7 @@ const styles = StyleSheet.create({
         backgroundColor: colours.primaryBackground
     },
     hostingText: {
-        color: '#00FF00',
+        color: colours.primaryText,
         fontSize: 16,
         fontWeight: 'bold'
     }

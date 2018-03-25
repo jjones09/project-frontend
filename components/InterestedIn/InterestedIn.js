@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {AsyncStorage, Text, Switch, View} from 'react-native';
+import {AsyncStorage, Slider, Switch, Text, View} from 'react-native';
 
 import { dev } from "../../config/apiURL";
 import styles from './styles';
@@ -20,6 +20,7 @@ export default class InterestedIn extends Component<props> {
             seeBoard: true,
             allHosts: false,
             showModal: false,
+            radius: 1,
             initialVals: {}
         };
     };
@@ -39,8 +40,8 @@ export default class InterestedIn extends Component<props> {
 
     render() {
         return (
-            <View>
-                <View>
+            <View style={styles.container}>
+                <View style={styles.section}>
                     <Text style={styles.header}>Show me</Text>
                     <View style={styles.rowContainerStyle1}>
                         <Text style={this.getVidStyle()}>Video Games</Text>
@@ -60,7 +61,7 @@ export default class InterestedIn extends Component<props> {
                                 value={this.state.seeBoard} />
                     </View>
                 </View>
-                <View>
+                <View style={styles.section}>
                     <Text style={styles.header}>Hosted by</Text>
                     <View style={styles.rowContainerStyle2}>
                         <Text style={this.getFriendsOnlyStyle()}>Friends only</Text>
@@ -73,11 +74,30 @@ export default class InterestedIn extends Component<props> {
                         <Text style={this.getAllHostStyle()}>Anyone</Text>
                     </View>
                 </View>
+                <View style={styles.section}>
+                    <Text style={styles.header}>Maximum Miles</Text>
+                    <View style={styles.rowContainerStyle2}>
+                        <Text style={styles.distLimitLabel}>1</Text>
+                        <Slider style={{width:200}}
+                                step={1}
+                                minimumValue={1}
+                                maximumValue={100}
+                                value={this.state.radius}
+                                onValueChange={this.setRadius.bind(this)}
+                        />
+                        <Text style={styles.distLimitLabel}>100</Text>
+                    </View>
+                    <Text style={styles.radiusVal}>{this.state.radius}</Text>
+                </View>
                 <View style={styles.btnContainer}>
                     {this.hasUnsavedChanges()}
                 </View>
             </View>
         );
+    };
+
+    setRadius(val) {
+        this.setState({radius: val});
     };
 
     getAllHostStyle() {
@@ -98,7 +118,7 @@ export default class InterestedIn extends Component<props> {
 
     toggleVideo(value) {
         if (!this.state.seeBoard && this.state.seeVideo) {
-            Toast.showShortCenter('Please select at least one type of game that you would like to be shown.');
+            Toast.showShortBottom('Please select at least one type of game that you would like to be shown.');
         }
         else {
             this.setState({seeVideo: value});
@@ -122,7 +142,8 @@ export default class InterestedIn extends Component<props> {
     hasUnsavedChanges() {
         if (this.state.seeVideo !== this.state.initialVals.seeVideo ||
             this.state.seeBoard !== this.state.initialVals.seeBoard ||
-            this.state.allHosts !== this.state.initialVals.allHosts)
+            this.state.allHosts !== this.state.initialVals.allHosts ||
+            this.state.radius !== this.state.initialVals.radius)
         {
             return (<Button text='Save Changes' onPress={this.saveChanges.bind(this)}/>);
         }
@@ -133,7 +154,8 @@ export default class InterestedIn extends Component<props> {
         let updates = {
             seeVideo: this.state.seeVideo,
             seeBoard: this.state.seeBoard,
-            allHosts: this.state.allHosts
+            allHosts: this.state.allHosts,
+            radius: this.state.radius
         };
         this.setState({initialVals: updates});
         AsyncStorage.getItem('uID').then(uID => {

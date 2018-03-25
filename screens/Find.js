@@ -8,7 +8,7 @@ export default class Find extends Component<Props> {
     static navigationOptions = {
         title: 'Find',
         header: null,
-        tabBarIcon: (<Icon color='#FFF' name='magnifying-glass' type='entypo'/>)
+        tabBarIcon: (<Icon size={20} color='#FFF' name='magnifying-glass' type='entypo'/>)
     };
 
     constructor(props) {

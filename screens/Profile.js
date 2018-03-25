@@ -8,25 +8,32 @@ import { colours } from "../components/common/styles";
 import InterestedIn from "../components/InterestedIn/InterestedIn";
 import ModalWrapper from "../components/ModalWrapper/ModalWrapper";
 import Button from "../components/Button/Button";
+import MyBio from "../components/MyBio/MyBio";
 
 export default class Profile extends Component<Props> {
     static navigationOptions = {
         title: 'Profile',
         header: null,
-        tabBarIcon: (<Icon color='#FFF' name='user' type='entypo'/>)
+        tabBarIcon: (<Icon size={20} color='#FFF' name='user' type='entypo'/>)
     };
 
     constructor(props) {
         super(props);
+        this.state = {
+            name: '',
+            location: {}
+        };
+    };
+
+    async fetchData() {
         AsyncStorage.getItem('userName').then(value => {
             this.setState({'name': value});
         });
-    };
+    }
 
-    state = {
-        name: '',
-        location: {}
-    };
+    componentDidMount() {
+        this.fetchData().done();
+    }
 
     openEventCreator() {
         console.log("Editing preferences");
@@ -43,6 +50,7 @@ export default class Profile extends Component<Props> {
                               contents={<InterestedIn/>}
                 />
                 <SignedIn />
+                <MyBio />
                 <ProfileInfo/>
                 <Button text='Edit Preferences' onPress={this.openEventCreator.bind(this)}/>
             </View>
