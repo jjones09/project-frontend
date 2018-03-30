@@ -30,6 +30,14 @@ export default StyleSheet.create({
         borderBottomColor: colours.invertedBackground
     },
 
+    tbDescStyle: {
+        justifyContent: 'flex-start',
+        width: 300,
+        fontSize: 16,
+        borderColor: 'transparent',
+        borderBottomColor: colours.invertedBackground
+    },
+
     tbUrlStyle: {
         width: 200,
         fontSize: 16,
@@ -68,6 +76,16 @@ export default StyleSheet.create({
         textAlign: 'left'
     },
 
+    locationName: {
+        color: colours.disabledText,
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 30,
+        textAlign: 'left'
+    },
+
     eventImg: {
         margin: 5,
         height: 250,
@@ -86,6 +104,8 @@ export default StyleSheet.create({
     },
 
     locBtn: {
+        marginTop: 10,
+        marginLeft: 100,
         width: 150,
         justifyContent: 'center',
         alignItems: 'center'

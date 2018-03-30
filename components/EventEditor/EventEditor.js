@@ -7,6 +7,7 @@ import styles from './styles';
 import {colours} from "../common/styles";
 
 import api from "../../lib/api-interface/apiInterface";
+import RNGooglePlaces from "react-native-google-places";
 
 export default class EventEditor extends Component<Props> {
 
@@ -19,7 +20,8 @@ export default class EventEditor extends Component<Props> {
             imgSelected: false,
             eventImg: {uri: ''},
             eventDate: '',
-            today: new Date()
+            today: new Date(),
+            location: ''
         };
     };
 
@@ -63,9 +65,65 @@ export default class EventEditor extends Component<Props> {
         this.setState({eventImg: {uri: ''}});
     }
 
+    toggleModal() {
+        this.setState({showModal: true});
+    }
+
+    openSearchModal() {
+        RNGooglePlaces.openAutocompleteModal()
+            .then(place => {
+                console.log('place - ' + JSON.stringify(place));
+                this.setState({
+                    location: {
+                        lat: place.latitude,
+                        long: place.longitude,
+                        name: place.name,
+                        address: place.address.split(', ')
+                    }
+                });
+            })
+            .catch(err => {console.log(err.message)});
+    }
+
+    clearAddress() {
+        this.setState({location: ''})
+    }
+
+    getAddress() {
+        if (this.state.location) {
+            let addressLines = this.state.location.address.map((addrLine, i) => {
+                return (<Text key={i} style={styles.sectionText}>{addrLine}</Text>)
+            });
+            return (
+                <View>
+                    <Text style={styles.locationName}>{this.state.location.name}</Text>
+                    {addressLines}
+                </View>
+            );
+        } else {
+            return (<Text style={styles.sectionText}>You haven't set a location yet</Text>);
+        }
+    }
+
+    getLocationBtns() {
+        let contents = (this.state.location) ?
+            (<Button
+                colour="grey"
+                text="Clear Location"
+                onPress={this.clearAddress.bind(this)} />) :
+            (<Button
+                text="Pick a Location"
+                onPress={this.openSearchModal.bind(this)} />);
+
+        return (<View style={styles.locBtn}>
+            {contents}
+        </View>)
+    }
+
     render() {
         return (
             <View style={{flex: 1, flexDirection: 'row'}}>
+
                 <ScrollView contentContainerStyle={{flexGrow: 1}}>
                     <View>
                         <View>
@@ -135,12 +193,23 @@ export default class EventEditor extends Component<Props> {
 
                         <View>
                             <Text style={styles.header}>Location</Text>
-                            <Text style={styles.sectionText}>You haven't set a location yet</Text>
-                            <View style={styles.locBtn}>
-                                <Button
-                                    text="Pick a Location"
-                                    onPress={console.log('pick location')} />
-                            </View>
+                            {this.getAddress()}
+                            {this.getLocationBtns()}
+                        </View>
+
+
+                        <Text style={styles.header}>Description</Text>
+                        <View style={styles.rowContainer}>
+                            <TextInput
+                                style={styles.tbDescStyle}
+                                maxLength={150}
+                                textAlignVertical='top'
+                                multiline={true}
+                                numberOfLines={4}
+                                onChangeText={this.updateStateTitle.bind(this)}
+                                placeholder='Say a few words about your event'
+                            />
+
                         </View>
                     </View>
                 </ScrollView>
