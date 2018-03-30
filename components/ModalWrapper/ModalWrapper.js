@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import styles from './styles';
 import cancelStyle from './cancelStyle';
+import KeyboardSpacer from "react-native-keyboard-spacer";
 
 export default class ModalWrapper extends Component<Props> {
 
@@ -14,7 +15,10 @@ export default class ModalWrapper extends Component<Props> {
 
     render() {
         return (
-            <Modal onRequestClose={() => console.log("Requesting modal close")} visible={this.props.vis}>
+            <Modal
+                onRequestClose={() => console.log("Requesting modal close")}
+                visible={this.props.vis}
+                style={{position: 'absolute'}}>
                 <View style={styles.containerHead}>
                     <Text style={styles.title}>{this.props.title}</Text>
                     <TouchableOpacity style={styles.cancel} onPress={() => {

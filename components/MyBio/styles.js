@@ -27,6 +27,12 @@ export default StyleSheet.create({
         marginBottom: 5
     },
 
+    bioCounter: {
+        textAlign: 'right',
+        fontSize: 12,
+        color: colours.disabledText
+    },
+
     text: {
         marginLeft: 5,
         marginRight: 5,

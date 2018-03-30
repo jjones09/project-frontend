@@ -4,6 +4,7 @@ import {AsyncStorage, StyleSheet, Text, View} from 'react-native';
 import { colours } from "../components/common/styles";
 import Button from "../components/Button";
 import ModalWrapper from "../components/ModalWrapper"
+import EventEditor from "../components/EventEditor";
 
 export default class Host extends Component<Props> {
     static navigationOptions = {
@@ -22,7 +23,12 @@ export default class Host extends Component<Props> {
     render() {
         return (
             <View style={styles.container}>
-                <ModalWrapper title='Create Event' that={this} vis={this.state.showModal} />
+                <ModalWrapper
+                    title='Create Event'
+                    that={this}
+                    vis={this.state.showModal}
+                    contents={<EventEditor/>}
+                />
                 {this.getHostingText()}
                 <Button text='Create new event' onPress={this.openEventCreator.bind(this)}/>
             </View>

@@ -3,12 +3,14 @@ import {colours} from "../common/styles";
 
 export default StyleSheet.create({
     containerHead: {
-        flex: 1,
+        height: 60,
         flexDirection: 'row',
         alignItems:'flex-start',
         paddingTop: 20,
-        backgroundColor: colours.invertedBackground
+        backgroundColor: colours.invertedBackground,
+        zIndex: 1
     },
+
     containerContent: {
         flex: 12,
         alignItems: 'flex-start',

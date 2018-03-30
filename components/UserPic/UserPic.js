@@ -18,12 +18,10 @@ export default class UserPic extends Component<props> {
 
     async fetchData() {
         AsyncStorage.getItem('profileImgUrl').then((url) => {
-            console.log('URL from async - ' + url);
             if (url) {
                 this.setState({url: url});
             }
             else {
-                console.log('Getting profile image from remote API');
                 AsyncStorage.getItem('uID').then((id) => {
                     api.getUserProfilePic(id).then(res => {
                         AsyncStorage.setItem('profileImgUrl', res.url);

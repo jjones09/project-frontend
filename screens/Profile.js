@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {AsyncStorage, StyleSheet, View} from 'react-native';
+import {AsyncStorage, ScrollView, StyleSheet, View} from 'react-native';
 import { Icon } from 'react-native-elements';
 
 import SignedIn from "../components/SignedIn";
@@ -9,6 +9,7 @@ import InterestedIn from "../components/InterestedIn/InterestedIn";
 import ModalWrapper from "../components/ModalWrapper/ModalWrapper";
 import Button from "../components/Button/Button";
 import MyBio from "../components/MyBio/MyBio";
+import Location from "../components/Location";
 
 export default class Profile extends Component<Props> {
     static navigationOptions = {
@@ -26,9 +27,6 @@ export default class Profile extends Component<Props> {
     };
 
     async fetchData() {
-        AsyncStorage.getItem('userName').then(value => {
-            this.setState({'name': value});
-        });
     }
 
     componentDidMount() {
@@ -41,19 +39,21 @@ export default class Profile extends Component<Props> {
     };
 
     render() {
-
         return (
-            <View style={styles.container}>
-                <ModalWrapper title='Edit Preferences'
-                              that={this}
-                              vis={this.state.showModal}
-                              contents={<InterestedIn/>}
-                />
-                <SignedIn />
-                <MyBio />
-                <ProfileInfo/>
-                <Button text='Edit Preferences' onPress={this.openEventCreator.bind(this)}/>
-            </View>
+            <ScrollView style={{flex: 1}}>
+                <View style={styles.container}>
+                    <ModalWrapper title='Edit Preferences'
+                                  that={this}
+                                  vis={this.state.showModal}
+                                  contents={<InterestedIn/>}
+                    />
+                    <SignedIn />
+                    <MyBio />
+                    {/*<ProfileInfo/>*/}
+                    <Location />
+                    <Button text='Edit Preferences' onPress={this.openEventCreator.bind(this)}/>
+                </View>
+            </ScrollView>
         );
     }
 }

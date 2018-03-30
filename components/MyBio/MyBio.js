@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
-import {TextInput, TouchableOpacity, View} from 'react-native';
+import {AsyncStorage, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import { Icon } from 'react-native-elements';
 import styles from './styles';
 import icon from "./iconStyle";
+
+const api = require("../../lib/api-interface/apiInterface");
 
 export default class MyBio extends Component<Props> {
 
@@ -15,13 +17,17 @@ export default class MyBio extends Component<Props> {
         };
     };
 
-    // async fetchData() {
-    //
-    // }
-    //
-    // componentDidMount() {
-    //     this.fetchData().done();
-    // }
+    async fetchData() {
+        AsyncStorage.getItem('uID').then(uID => {
+            api.getUserBio(uID).then(res => {
+                this.setState({bio: res.bio, changes: res.bio});
+            });
+        });
+    }
+
+    componentDidMount() {
+        this.fetchData().done();
+    }
 
     toggleEditable() {
         this.setState({editable: !this.state.editable});
@@ -29,6 +35,21 @@ export default class MyBio extends Component<Props> {
 
     updateChanges(txt) {
         this.setState({changes: txt});
+    }
+
+    cancelEdit() {
+        this.setState({changes: this.state.bio});
+        this.toggleEditable();
+    }
+
+    saveBioEdits() {
+        if (this.state.bio !== this.state.changes) {
+            this.setState({bio: this.state.changes});
+            AsyncStorage.getItem('uID').then(uID => {
+                api.setUserBio(uID, this.state.bio);
+            });
+        }
+        this.toggleEditable();
     }
 
     includeIcons() {
@@ -41,10 +62,10 @@ export default class MyBio extends Component<Props> {
         else {
             return (
                     <View>
-                        <TouchableOpacity style={styles.saveBtn} onPress={this.toggleEditable.bind(this)}>
+                        <TouchableOpacity style={styles.saveBtn} onPress={this.saveBioEdits.bind(this)}>
                             <Icon color={icon.color} name='save' type='entypo' size={icon.size}/>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.cancelBtn} onPress={this.toggleEditable.bind(this)}>
+                        <TouchableOpacity style={styles.cancelBtn} onPress={this.cancelEdit.bind(this)}>
                             <Icon color={icon.color} name='cross' type='entypo' size={icon.size}/>
                         </TouchableOpacity>
                     </View>
@@ -53,19 +74,32 @@ export default class MyBio extends Component<Props> {
         }
     }
 
+    includeBioCount() {
+        if (this.state.editable) {
+            return (<Text style={styles.bioCounter}>
+                {(this.state.changes) ? this.state.changes.length : '0'}/200
+            </Text>);
+        }
+    }
+
     render() {
         return (
-            <View style={styles.container}>
-                <TextInput
-                    editable={this.state.editable}
-                    autoGrow={false}
-                    maxLength={200}
-                    height={80}
-                    onChangeText={this.updateChanges.bind(this)}
-                    style={styles.tbStyle}
-                    value={this.state.changes}
-                />
-                {this.includeIcons()}
+            <View style={{height: 120}}>
+                <View style={styles.container}>
+                    <TextInput
+                        editable={this.state.editable}
+                        multiline={true}
+                        autoGrow={false}
+                        maxLength={200}
+                        height={80}
+                        onChangeText={this.updateChanges.bind(this)}
+                        style={styles.tbStyle}
+                        value={this.state.changes}
+                        placeholder="e.g My Games Night"
+                    />
+                    {this.includeIcons()}
+                </View>
+                {this.includeBioCount()}
             </View>
         );
     }

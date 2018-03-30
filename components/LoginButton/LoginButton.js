@@ -112,7 +112,7 @@ export default class LoginButton extends Component<props> {
     };
 
     logIn = () => {
-        LoginManager.logInWithReadPermissions(['public_profile']).then((res) => {
+        LoginManager.logInWithReadPermissions(['public_profile', 'user_photos']).then((res) => {
                 if (!res.isCancelled) {
                     console.log('Login successful. Permissions: %s', res.grantedPermissions.toString());
                     AccessToken.getCurrentAccessToken().then(data => {

@@ -7,6 +7,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.psykar.cookiemanager.CookieManagerPackage;
 import com.oblador.keychain.KeychainPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
@@ -37,6 +38,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new PickerPackage(),
             new CookieManagerPackage(),
             new KeychainPackage(),
             new FBSDKPackage(mCallbackManager),

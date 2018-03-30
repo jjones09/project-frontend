@@ -7,12 +7,18 @@ export default StyleSheet.create({
         fontSize: 16,
         fontWeight: '500'
     },
+
     button: {
-        paddingVertical: 10,
+        paddingVertical: 8,
         paddingHorizontal: 20,
         backgroundColor: colours.primaryButtonBackground,
-        margin: 10,
-        marginTop: 20,
+        borderRadius: 5
+    },
+
+    greyButton: {
+        paddingVertical: 8,
+        paddingHorizontal: 20,
+        backgroundColor: colours.negativeButtonBackground,
         borderRadius: 5
     }
 });

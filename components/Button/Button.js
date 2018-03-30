@@ -13,15 +13,19 @@ export default class Button extends Component<props> {
         super(props);
     }
 
-    componentDidMount() {
-    }
-
-    async fetchData() {
+    getButtonStyle() {
+        if (this.props.colour === 'grey') {
+            return styles.greyButton;
+        }
+        else {
+            return styles.button;
+        }
     }
 
     render() {
         return (
-            <TouchableOpacity style={styles.button} onPress={this.props.onPress}>
+            <TouchableOpacity style={this.getButtonStyle()}
+                              onPress={this.props.onPress}>
                 <Text style={styles.buttonText}>
                     { this.props.text }
                 </Text>
