@@ -33,14 +33,68 @@ export default class LoginButton extends Component<props> {
         });
     }
 
+    // Include the facebook icon on the login button if not already logged in
     getFbIcon() {
         if (this.state.btnText.indexOf('Continue') < 0) {
             return (<Icon name='facebook' type='entypo' size={iconStyle.size} color={iconStyle.color}/>);
         }
     };
 
-    render() {
+    // Checks if the device is connected to the network
+    checkConnection = () => {
+        return new Promise(resolve => {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                resolve(isConnected);
+            });
+        });
+    };
 
+    // Determine if the login button is for a currently authenticated user, or a new login
+    determineAction = () => {
+        if (this.state.btnText.indexOf('Continue') >= 0) {
+            this.continue();
+        }
+        else {
+            this.logIn();
+        }
+    };
+
+    // Remove items from AsyncStorage
+    // TODO: THIS COULD PROBABLY BE MOVED TO A CENTRAL SESSION MANAGEMENT
+    logOut = () => {
+        AsyncStorage.removeItem('userName');
+        AsyncStorage.removeItem('profileImgUrl');
+        this.setState({'btnText': 'Log in with Facebook'});
+    };
+
+    // Log in the user
+    continue = async () => {
+        let isConnected = await this.checkConnection();
+        if (isConnected) {
+            AsyncStorage.getItem('appID').then(tkn => {
+                AsyncStorage.getItem('uID').then(uID => {
+                    console.log('app ID is ' + tkn);
+                    console.log('uID is ' + uID);
+                    api.verifyUserToken(uID, tkn).then(res => {
+                        console.log('VALID USER - ' + res.validUser);
+                        if (res.validUser) {
+                            this.props.navigate('Hub', {});
+                        }
+                        else {
+                            Toast.showShortCenter('Please reauthenticate through Facebook');
+                            this.logOut();
+                        }
+                    });
+                });
+            })
+        }
+        else {
+            Toast.showShortCenter('Your device is not connected to the internet.' +
+                ' Please check your connection and try again.');
+        }
+    };
+
+    render() {
         let comp = [];
         comp.push (
                 <TouchableOpacity key='loginBtn' style={styles.button} onPress={this.determineAction}>
@@ -68,56 +122,13 @@ export default class LoginButton extends Component<props> {
         return comp;
     }
 
-    checkConnection = () => {
-        return new Promise(resolve => {
-            NetInfo.isConnected.fetch().then(isConnected => {
-                resolve(isConnected);
-            });
-        });
-    };
-
-    determineAction = () => {
-        if (this.state.btnText.indexOf('Continue') >= 0) {
-            this.continue();
-        }
-        else {
-            this.logIn();
-        }
-    };
-
-    logOut = () => {
-        AsyncStorage.removeItem('userName');
-        AsyncStorage.removeItem('profileImgUrl');
-        this.setState({'btnText': 'Log in with Facebook'});
-    };
-
-    continue = async () => {
-        let isConnected = await this.checkConnection();
-        if (isConnected) {
-            AsyncStorage.getItem('appID').then( tkn => {
-                AsyncStorage.getItem('uID').then(uID => {
-                    api.verifyUserToken(uID, tkn).then(res => {
-                        console.log(res);
-                        if (res) {
-                            this.props.navigate('Hub', {});
-                        }
-                    });
-                });
-            })
-        }
-        else {
-            Toast.showShortCenter('Your device is not connected to the internet.' +
-                ' Please check your connection and try again.');
-        }
-    };
-
     logIn = () => {
         LoginManager.logInWithReadPermissions(['public_profile', 'user_photos']).then((res) => {
                 if (!res.isCancelled) {
                     console.log('Login successful. Permissions: %s', res.grantedPermissions.toString());
                     AccessToken.getCurrentAccessToken().then(data => {
                             console.log('Token obtained. Verifying with server');
-                            api.requestUserToken(data.userID, data.accessToken).then(res => {
+                            api.requestUserToken(data.accessToken).then(res => {
                                 AsyncStorage.setItem('userName', res.user);
                                         AsyncStorage.setItem('uID', data.userID);
                                         AsyncStorage.setItem('appID', res.token);

@@ -158,8 +158,6 @@ export default class InterestedIn extends Component<props> {
             radius: this.state.radius
         };
         this.setState({initialVals: updates});
-        AsyncStorage.getItem('uID').then(uID => {
-            api.setUserPreferences(uID, updates);
-        });
+        api.setUserPreferences(updates);
     }
 }

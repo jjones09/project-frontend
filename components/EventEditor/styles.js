@@ -11,26 +11,19 @@ export default StyleSheet.create({
     },
 
     section: {
+        marginTop: 10,
         marginBottom: 25
     },
 
-    tbContainer: {
-        marginLeft: 5,
-        marginRight: 5,
-        flexDirection: 'row',
-        alignItems:'center',
-        justifyContent: 'center'
+    header: {
+        color: colours.primaryText,
+        fontSize: 20,
+        marginBottom: 5,
+        marginLeft: 30,
+        textAlign: 'left'
     },
 
-    tbTitleStyle: {
-        width: 300,
-        fontSize: 16,
-        textAlign: 'center',
-        borderColor: 'transparent',
-        borderBottomColor: colours.invertedBackground
-    },
-
-    tbDescStyle: {
+    tbStyle: {
         justifyContent: 'flex-start',
         width: 300,
         fontSize: 16,
@@ -58,20 +51,19 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
 
-    header: {
-        color: colours.primaryText,
-        fontSize: 20,
-        marginTop: 10,
-        marginBottom: 5,
-        marginLeft: 30,
-        textAlign: 'left'
-    },
 
     sectionText: {
         color: colours.disabledText,
         fontSize: 16,
         marginTop: 5,
         marginBottom: 5,
+        marginLeft: 30,
+        textAlign: 'left'
+    },
+
+    addressText: {
+        color: colours.disabledText,
+        fontSize: 16,
         marginLeft: 30,
         textAlign: 'left'
     },
@@ -109,5 +101,18 @@ export default StyleSheet.create({
         width: 150,
         justifyContent: 'center',
         alignItems: 'center'
-    }
+    },
+
+    activeSwitchLabel: {
+        justifyContent: 'flex-start',
+        color: colours.primaryText,
+        fontSize: 18,
+        fontWeight: '400'
+    },
+
+    inactiveSwitchLabel: {
+        justifyContent: 'flex-start',
+        color: colours.disabledText,
+        fontSize: 18
+    },
 });
