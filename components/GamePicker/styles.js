@@ -12,7 +12,7 @@ export default StyleSheet.create({
 
     section: {
         marginTop: 10,
-        marginBottom: 25
+        marginBottom: 15
     },
 
     header: {
@@ -42,11 +42,20 @@ export default StyleSheet.create({
         alignItems:'flex-start'
     },
 
-    gameTitle: {
-        fontSize: 20,
-        marginBottom: 5,
+    selectedGame: {
+        fontSize: 14,
+        marginBottom: 2,
         marginLeft: 10,
         textAlign: 'left',
         width: 200,
+    },
+
+    gameImg: {
+        margin: 5,
+        height: 50,
+        width: 50,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: colours.disabledText
     },
 });

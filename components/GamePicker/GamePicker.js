@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {
+    Animated,
     ActivityIndicator,
-    Image,
+    PanResponder,
     ScrollView,
     Text,
     TextInput,
@@ -17,6 +18,7 @@ import Button from "../Button";
 
 import Toast from '@remobile/react-native-toast';
 import SearchResult from "../SearchResult";
+import DraggableGame from "../DraggableGame";
 
 export default class GamePicker extends Component<Props> {
 
@@ -27,8 +29,23 @@ export default class GamePicker extends Component<Props> {
             query: '',
             searching: false,
             games: [],
-            selected: []
+            selected: [],
+            pan: new Animated.ValueXY()
         };
+
+        this.panResponder = PanResponder.create({
+            onStartShouldSetPanResponder: () => true,
+            onPanResponderMove: Animated.event([null, {
+                dx: this.state.pan.x,
+                dy: this.state.pan.y
+            }]),
+            onPanResponderRelease: (e, gesture) => {
+                Animated.spring(
+                    this.state.pan,
+                    {toValue: {x: 0, y: 0}}
+                ).start();
+            }
+        });
     };
 
     // Update the state with the value in the search bar
@@ -111,25 +128,25 @@ export default class GamePicker extends Component<Props> {
         });
     }
 
-    getSelectedGames() {
-        let results;
-        let listProp = this.props.thatProp;
-        if (this.props.that.state[listProp].length === 0) {
-            results = (<Text>Find games using the search bar above</Text>);
-        }
-        else {
-            results = this.props.that.state[listProp].map((game, i) => {
-                return (<View key={i} style={styles.sideBySide}>
-                    <Text>{game.name}</Text>
-                    <TouchableOpacity
-                        onPress={() => (this.removeSelectedGame.bind(this))(i)}>
-                        <Text>X</Text>
-                    </TouchableOpacity>
-                </View>);
-            });
-        }
-        return results;
-    }
+    // getSelectedGames() {
+    //     let results;
+    //     let listProp = this.props.thatProp;
+    //     if (this.props.that.state[listProp].length === 0) {
+    //         results = (<Text>Find games using the search bar above</Text>);
+    //     }
+    //     else {
+    //         results = this.props.that.state[listProp].map((game, i) => {
+    //             return (<View key={i} style={styles.sideBySide}>
+    //                 <Text style={styles.selectedGame}>{game.name}</Text>
+    //                 <TouchableOpacity
+    //                     onPress={() => (this.removeSelectedGame.bind(this))(i)}>
+    //                     <Text>X</Text>
+    //                 </TouchableOpacity>
+    //             </View>);
+    //         });
+    //     }
+    //     return results;
+    // }
 
     getEventType() {
         return (this.props.playingBoard) ? 'board' : 'video'
@@ -176,18 +193,49 @@ export default class GamePicker extends Component<Props> {
                 {/*START ADDED GAMES SECTION*/}
                 <View style={styles.section}>
                     <Text style={styles.header}>Added Games</Text>
+
+
+                    {/* OLD STYLE - GAMES LIST. TRYING DRAGGABLE IMAGES */}
+                    {/*<View style={styles.sectionContent}>*/}
+                        {/*<View style={{height: 100, alignItems:'center', justifyContent:'center'}}>*/}
+                            {/*{this.getSelectedGames()}*/}
+                        {/*</View>*/}
+                        {/*<Text style={{fontSize: 10}}>*/}
+                            {/*{this.getGameCount()}*/}
+                        {/*</Text>*/}
+                    {/*</View>*/}
+
+
                     <View style={styles.sectionContent}>
-                        <View style={{height: 100, alignItems:'center', justifyContent:'center'}}>
-                            {this.getSelectedGames()}
+                        <View style={styles.sideBySide}>
+                            {this.getDraggableGames()}
                         </View>
                         <Text style={{fontSize: 10}}>
                             {this.getGameCount()}
                         </Text>
                     </View>
+
+
                 </View>
                 {/*END ADDED GAMES SECTION*/}
 
             </View>
         );
     };
+
+    getDraggableGames() {
+        let results;
+        let listProp = this.props.thatProp;
+        if (this.props.that.state[listProp].length === 0) {
+            results = (<Text>Find games using the search bar above</Text>);
+        }
+        else {
+            results = this.props.that.state[listProp].map((game, i) => {
+
+                // DRAGGABLE GAME IMAGE
+                return (<DraggableGame key={i} image={game.image}/>);
+            });
+        }
+        return results;
+    }
 }
