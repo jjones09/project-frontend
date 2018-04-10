@@ -18,30 +18,16 @@ export default class EventEditor extends Component<Props> {
 
         this.state = {
             eventTitle: '',
-            tempURL: '',
-            imgSelected: false,
-            eventImg: {uri: ''},
             eventDate: '',
             today: new Date(),
             location: '',
             description: '',
             playingBoard: false,
             selectedGames: [],
+            forGlory: false,
+            publicEvent: false,
             showModal: false
         };
-    };
-
-    componentDidMount() {
-        this.fetchData().done();
-    };
-
-    async fetchData() {
-        AsyncStorage.getItem('uID').then(uID => {
-            api.getUserPreferences(uID).then(prefs => {
-                this.setState(prefs);
-                this.setState({initialVals: prefs});
-            });
-        });
     };
 
     // Updates the saved title for the event
@@ -50,33 +36,6 @@ export default class EventEditor extends Component<Props> {
     }
     updateStateDescription(val) {
         this.setState({description: val});
-    }
-
-    // Updates the value stored within the image URL textbox
-    updateTempURL(val) {
-        this.setState({tempURL: val});
-    };
-
-    // Include the 'OK' or 'Clear' button dependent on whether an image has been included
-    getImgBtn() {
-        return (this.state.imgSelected) ?
-            (<Button colour='grey'
-                     text='Clear'
-                     onPress={this.clearImage.bind(this)}/>) :
-            (<Button text='OK'
-                     onPress={this.getImage.bind(this)}/>);
-    }
-
-    // Update the image box with the new image URL
-    getImage() {
-        this.setState({imgSelected: !this.state.imgSelected});
-        this.setState({eventImg: {uri: this.state.tempURL}});
-    };
-
-    // Remove the image from the image box and clear the URL
-    clearImage() {
-        this.setState({imgSelected: !this.state.imgSelected});
-        this.setState({eventImg: {uri: ''}});
     }
 
     // Open the google location picker
@@ -141,181 +100,40 @@ export default class EventEditor extends Component<Props> {
         });
     }
 
+    togglePlayStyle() {
+        this.setState({
+            forGlory: !this.state.forGlory
+        });
+    }
+
+    togglePrivacy() {
+        this.setState({
+            publicEvent: !this.state.publicEvent
+        });
+    }
+
     getTypeSwitchStyle(compareBool) {
-        return (this.state.playingBoard === compareBool) ? styles.activeSwitchLabel : styles.inactiveSwitchLabel;
+        return (this.state.playingBoard === compareBool) ?
+            styles.activeSwitchLabel : styles.inactiveSwitchLabel;
+    };
+
+    getPlaySwitchStyle(compareBool) {
+        return (this.state.forGlory === compareBool) ?
+            styles.activeSwitchLabel : styles.inactiveSwitchLabel;
+    };
+
+    getPrivacySwitchStyle(compareBool) {
+        return (this.state.publicEvent === compareBool) ?
+            styles.activeSwitchLabel : styles.inactiveSwitchLabel;
+    };
+
+    getSwitchLabelStyle(compareBool, stateValue) {
+        return (stateValue === compareBool) ?
+            styles.activeSwitchLabel : styles.inactiveSwitchLabel;
     };
 
     openGamePicker () {
         this.setState({showModal: true});
-    }
-
-    render() {
-        return (
-            <View style={{flex: 1, flexDirection: 'row'}}>
-
-                <ModalWrapper title='Add Games'
-                              that={this}
-                              vis={this.state.showModal}
-                              contents={<GamePicker
-                                  playingBoard={this.state.playingBoard}
-                                  that={this}
-                                  thatProp={'selectedGames'}
-                              />}
-                />
-
-                <ScrollView contentContainerStyle={{flexGrow: 1}}>
-                    <View>
-                        {/* START TITLE SECTION */}
-                        <View style={styles.section}>
-                            <Text style={styles.header}>Title</Text>
-                            <View style={styles.rowContainer}>
-                                <TextInput
-                                    style={styles.tbStyle}
-                                    autoGrow={false}
-                                    maxLength={100}
-                                    onChangeText={this.updateStateTitle.bind(this)}
-                                    placeholder='e.g My Games Night'
-                                />
-                            </View>
-                            <View>
-                                <Text style={styles.titleCounter}>
-                                    {this.state.eventTitle.length}/100
-                                </Text>
-                            </View>
-                        </View>
-                        {/* END TITLE SECTION */}
-
-                        {/* START DATE/TIME SECTION */}
-                        <View style={styles.section}>
-                            <Text style={styles.header}>Date and Time</Text>
-                            <DatePicker
-                                style={{width:200}}
-                                date={this.state.eventDate}
-                                placeholder="Select Date"
-                                mode="datetime"
-                                format="ddd DD MMM H:mm"
-                                minDate={this.state.today}
-                                showIcon={false}
-                                onDateChange={date => {
-                                    this.setState({eventDate: date});
-                                }}
-                                customStyles={{
-                                    dateInput: {
-                                        marginLeft:40,
-                                        borderColor: 'transparent',
-                                        borderBottomColor: colours.invertedBackground
-                                    },
-                                    dateText: {
-                                        fontSize: 16
-                                    },
-                                    placeholderText: {
-                                        fontSize: 16
-                                    }
-                                }}
-                            />
-                        </View>
-                        {/* END DATE/TIME SECTION */}
-
-                        {/* START LOCATION SECTION */}
-                        <View style={styles.section}>
-                            <Text style={styles.header}>Location</Text>
-                            {this.getAddress()}
-                            {this.getLocationBtns()}
-                        </View>
-                        {/* END LOCATION SECTION */}
-
-                        {/* START DESCRIPTION SECTION*/}
-                        <View style={styles.section}>
-                            <Text style={styles.header}>Description</Text>
-                            <View style={styles.rowContainer}>
-                                <TextInput
-                                    style={styles.tbStyle}
-                                    maxLength={150}
-                                    textAlignVertical='top'
-                                    multiline={true}
-                                    numberOfLines={4}
-                                    onChangeText={this.updateStateDescription.bind(this)}
-                                    placeholder='Say a few words about your event'
-                                />
-                            </View>
-                            <View>
-                                <Text style={styles.titleCounter}>
-                                    {this.state.description.length}/500
-                                </Text>
-                            </View>
-                        </View>
-                        {/* END DESCRIPTION SECTION*/}
-
-                        {/*START EVENT TYPE SECTION*/}
-                        <View style={styles.section}>
-                            <Text style={styles.header}>Games Type</Text>
-                            <View style={styles.sideBySide}>
-                                <Text style={this.getTypeSwitchStyle(false)}>Video Games</Text>
-                                <Switch
-                                    onTintColor={colours.disabledText}
-                                    tintColor={colours.disabledText}
-                                    thumbTintColor={colours.primaryButtonBackground}
-                                    onValueChange={this.toggleGameType.bind(this)}
-                                    value={this.state.playingBoard} />
-                                <Text style={this.getTypeSwitchStyle(true)}>Board Games</Text>
-                            </View>
-                            {this.getGames()}
-                            <View style={styles.locBtn}>
-                                <Button
-                                    text="Add/Edit games"
-                                    onPress={this.openGamePicker.bind(this)} />
-                            </View>
-                        </View>
-                        {/*END GAMES SECTION*/}
-
-
-
-
-                        {/*START EVENT TYPE SECTION*/}
-                        <View style={styles.section}>
-                            <Text style={styles.header}>Games Type</Text>
-                            <View style={styles.sideBySide}>
-                                <Text style={this.getTypeSwitchStyle(false)}>Video Games</Text>
-                                <Switch
-                                    onTintColor={colours.disabledText}
-                                    tintColor={colours.disabledText}
-                                    thumbTintColor={colours.primaryButtonBackground}
-                                    onValueChange={this.toggleGameType.bind(this)}
-                                    value={this.state.playingBoard} />
-                                <Text style={this.getTypeSwitchStyle(true)}>Board Games</Text>
-                            </View>
-                        </View>
-                        {/*END EVENT TYPE SECTION*/}
-
-
-
-
-                        {/* START PHOTO SECTION */}
-
-                        {/*<View style={styles.section}>*/}
-                            {/*<Text style={styles.header}>Image</Text>*/}
-                            {/*<View style={styles.tbContainer} >*/}
-                                {/*<Image style={styles.eventImg}*/}
-                                       {/*source={this.state.eventImg}/>*/}
-                            {/*</View>*/}
-                            {/*<View style={styles.game}>*/}
-                                {/*<TextInput*/}
-                                    {/*editable={!this.state.imgSelected}*/}
-                                    {/*style={styles.tbUrlStyle}*/}
-                                    {/*autoGrow={false}*/}
-                                    {/*onChangeText={this.updateTempURL.bind(this)}*/}
-                                    {/*placeholder='Enter Image URL'*/}
-                                {/*/>*/}
-                                {/*{this.getImgBtn()}*/}
-                            {/*</View>*/}
-                        {/*</View>*/}
-                        {/* END PHOTO SECTION */}
-
-
-                    </View>
-                </ScrollView>
-            </View>
-        );
     };
 
     getGames() {
@@ -329,5 +147,222 @@ export default class EventEditor extends Component<Props> {
                 </View>
             );
         });
-    }
+    };
+
+    submitEvent () {
+        console.log("EVENT SUBMITTED!");
+    };
+
+    render() {
+        return (
+            <View style={{flex: 1, flexDirection: 'row'}}>
+
+                <ModalWrapper
+                    title='Add Games'
+                    that={this}
+                    vis={this.state.showModal}
+                    contents={<GamePicker
+                        playingBoard={this.state.playingBoard}
+                        that={this}
+                        thatProp={'selectedGames'}
+                    />}
+                />
+
+                <ScrollView
+                    contentContainerStyle={{flexGrow: 1}}
+                    showsVerticalScrollIndicator={true} >
+                    <View>
+                        {/* START TITLE SECTION */}
+                        <View style={styles.section}>
+                            <Text style={styles.header}>Title</Text>
+                            <View style={styles.sectionDescription}>
+                                <Text style={styles.descriptionText}>
+                                    Give people a short and snappy summary
+                                    of what they can expect at your game night.
+                                </Text>
+                            </View>
+                            <View style={styles.rowContainer}>
+                                <TextInput
+                                    style={styles.tbStyle}
+                                    autoGrow={false}
+                                    maxLength={100}
+                                    onChangeText={this.updateStateTitle.bind(this)}
+                                    placeholder="Give your event a name"
+                                />
+                            </View>
+                            <View>
+                                <Text style={styles.titleCounter}>
+                                    {this.state.eventTitle.length}/100
+                                </Text>
+                            </View>
+                        </View>
+                        {/* END TITLE SECTION */}
+
+                        {/* START DATE/TIME SECTION */}
+                        <View style={styles.section}>
+                            <Text style={styles.header}>Date and Time</Text>
+                            <View style={styles.sectionDescription}>
+                                <Text style={styles.descriptionText}>
+                                    Let people know when they should arrive (hopefully with snacks).
+                                </Text>
+                            </View>
+                            <DatePicker
+                                style={{width:200}}
+                                date={this.state.eventDate}
+                                placeholder="Pick a Date"
+                                mode="datetime"
+                                format="ddd DD MMM H:mm"
+                                minDate={this.state.today}
+                                showIcon={false}
+                                onDateChange={date => {
+                                    this.setState({eventDate: date});
+                                }}
+                                customStyles={{
+                                    dateInput: {
+                                        marginLeft:40,
+                                        borderColor: 'transparent',
+                                        borderBottomColor: colours.invertedBackground
+                                    },
+                                    dateText: {fontSize: 16},
+                                    placeholderText: {fontSize: 16}
+                                }}
+                            />
+                        </View>
+                        {/* END DATE/TIME SECTION */}
+
+                        {/* START LOCATION SECTION */}
+                        <View style={styles.section}>
+                            <Text style={styles.header}>Location</Text>
+                            <View style={styles.sectionDescription}>
+                                <Text style={styles.descriptionText}>
+                                    Tell players where you're planning on playing games.
+                                    Unless you're playing 'Find the Games Night', of course.
+                                </Text>
+                            </View>
+                            {this.getAddress()}
+                            {this.getLocationBtns()}
+                        </View>
+                        {/* END LOCATION SECTION */}
+
+                        {/* START DESCRIPTION SECTION*/}
+                        <View style={styles.section}>
+                            <Text style={styles.header}>Description</Text>
+                            <View style={styles.sectionDescription}>
+                                <Text style={styles.descriptionText}>
+                                    The world of games has a near infinite supply of characters,
+                                    but here we're giving you 200 to tell people a bit more about your event.
+                                </Text>
+                            </View>
+                            <View style={styles.rowContainer}>
+                                <TextInput
+                                    style={styles.tbStyle}
+                                    maxLength={200}
+                                    textAlignVertical='top'
+                                    multiline={true}
+                                    numberOfLines={4}
+                                    onChangeText={this.updateStateDescription.bind(this)}
+                                    placeholder="Let everyone know a bit more about what they can expect"
+                                />
+                            </View>
+                            <View>
+                                <Text style={styles.titleCounter}>
+                                    {this.state.description.length}/500
+                                </Text>
+                            </View>
+                        </View>
+                        {/* END DESCRIPTION SECTION*/}
+
+                        {/*START GAMES SECTION*/}
+                        <View style={styles.section}>
+                            <Text style={styles.header}>Games</Text>
+                            <View style={styles.sectionDescription}>
+                                <Text style={styles.descriptionText}>
+                                    What would a games night be without games?
+                                    Let people know if you'll be sat at a screen or a table,
+                                    and give a few examples of what you'll be playing.
+                                </Text>
+                            </View>
+                            <View style={styles.switchRow}>
+                                <Text style={this.getSwitchLabelStyle(false, this.state.playingBoard)}>Video Games</Text>
+                                <Switch
+                                    onTintColor={colours.disabledText}
+                                    tintColor={colours.disabledText}
+                                    thumbTintColor={colours.primaryButtonBackground}
+                                    onValueChange={this.toggleGameType.bind(this)}
+                                    value={this.state.playingBoard} />
+                                <Text style={this.getSwitchLabelStyle(true, this.state.playingBoard)}>Board Games</Text>
+                            </View>
+                            {this.getGames()}
+                            <View style={styles.locBtn}>
+                                <Button
+                                    text="Add/Edit games"
+                                    onPress={this.openGamePicker.bind(this)} />
+                            </View>
+                        </View>
+                        {/*END GAMES SECTION*/}
+
+
+                        {/*START PLAY STYLE SECTION*/}
+                        <View style={styles.section}>
+                            <Text style={styles.header}>Play Style</Text>
+                            <View style={styles.sectionDescription}>
+                                <Text style={styles.descriptionText}>
+                                    Are you here to make some friends, or to take no prisoners?
+                                    Pick the play style that suits your event best!
+                                </Text>
+                            </View>
+                            <View style={styles.switchRow}>
+                                <Text style={this.getSwitchLabelStyle(false, this.state.forGlory)}>For Fun</Text>
+                                <Switch
+                                    onTintColor={colours.disabledText}
+                                    tintColor={colours.disabledText}
+                                    thumbTintColor={colours.primaryButtonBackground}
+                                    onValueChange={this.togglePlayStyle.bind(this)}
+                                    value={this.state.forGlory} />
+                                <Text style={this.getSwitchLabelStyle(true, this.state.forGlory)}>For Glory</Text>
+                            </View>
+                        </View>
+                        {/*END PLAY STYLE SECTION*/}
+
+
+                        {/*START VISIBILITY SECTION*/}
+                        <View style={styles.section}>
+                            <Text style={styles.header}>Visibility</Text>
+                            <View style={styles.sectionDescription}>
+                                <Text style={styles.descriptionText}>
+                                    Lastly, are you looking for some new players or
+                                    would you rather play with old friends? Your call!
+                                </Text>
+                            </View>
+                            <View style={styles.switchRow}>
+                                <Text style={[
+                                    this.getSwitchLabelStyle(false, this.state.publicEvent),
+                                    styles.smallTxt]}>Just Friends</Text>
+                                <Switch
+                                    onTintColor={colours.disabledText}
+                                    tintColor={colours.disabledText}
+                                    thumbTintColor={colours.primaryButtonBackground}
+                                    onValueChange={this.togglePrivacy.bind(this)}
+                                    value={this.state.publicEvent} />
+                                <Text style={[
+                                    this.getSwitchLabelStyle(true, this.state.publicEvent),
+                                    styles.smallTxt]}>Anyone Welcome</Text>
+                            </View>
+                        </View>
+                        {/*END VISIBILITY SECTION*/}
+
+
+                        {/*START SUBMIT SECTION*/}
+                        <View style={styles.section}>
+                            <Button
+                                text="Create"
+                                onPress={this.submitEvent.bind(this)} />
+                        </View>
+                        {/*END SUBMIT SECTION*/}
+
+                    </View>
+                </ScrollView>
+            </View>
+        );
+    };
 }

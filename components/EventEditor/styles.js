@@ -86,9 +86,9 @@ export default StyleSheet.create({
         borderColor: colours.disabledText
     },
 
-    sideBySide: {
-        marginLeft: 40,
-        marginRight: 40,
+    switchRow: {
+        marginHorizontal: 40,
+        marginVertical: 10,
         flexDirection: 'row',
         alignItems:'center',
         justifyContent: 'space-between'
@@ -130,5 +130,20 @@ export default StyleSheet.create({
         borderRadius: 5,
         borderWidth: 1,
         borderColor: colours.disabledText
+    },
+
+    sectionDescription: {
+        marginVertical: 10,
+        marginHorizontal: 30
+    },
+
+    descriptionText: {
+        color: colours.disabledText,
+        fontSize: 14,
+        textAlign: 'left'
+    },
+
+    smallTxt: {
+        fontSize: 14
     }
 });
