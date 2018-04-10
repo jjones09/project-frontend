@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {AsyncStorage, Image, ScrollView, Switch, Text, TextInput, View} from 'react-native';
+import {Image, ScrollView, Switch, Text, TextInput, View} from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import Button from "../Button/";
 
@@ -10,6 +10,7 @@ import api from "../../lib/api-interface/apiInterface";
 import RNGooglePlaces from "react-native-google-places";
 import ModalWrapper from "../ModalWrapper";
 import GamePicker from "../GamePicker";
+import Toast from '@remobile/react-native-toast';
 
 export default class EventEditor extends Component<Props> {
 
@@ -149,8 +150,56 @@ export default class EventEditor extends Component<Props> {
         });
     };
 
+    validateParams () {
+        let errs = [];
+
+        let title = this.state.eventTitle;
+        if (!title || title.split(' ').join().length < 5) {
+            errs.push("Missing a valid event title");
+        }
+
+        if (!this.state.eventDate) {
+            errs.push("Missing event date/time");
+        }
+
+        if (!this.state.location) {
+            errs.push("Missing event location");
+        }
+
+        let desc = this.state.description;
+        if (!desc || desc.split(' ').join().length < 5) {
+            errs.push("Missing a valid event description");
+        }
+
+        if (this.state.selectedGames.length === 0) {
+            errs.push("At least one game should be selected");
+        }
+
+        return errs;
+    }
+
     submitEvent () {
-        console.log("EVENT SUBMITTED!");
+
+        let formErrs = this.validateParams();
+
+        if (formErrs.length === 0) {
+            let eventObj = {
+                title: this.state.eventTitle,
+                dateTime: this.state.eventDate,
+                location: this.state.location,
+                description: this.state.description,
+                playingBoard: this.state.playingBoard,
+                games: this.state.selectedGames.map(game => game.id),
+                forGlory: this.state.forGlory,
+                publicEvent: this.state.publicEvent
+            };
+
+            api.createEvent(eventObj);
+        }
+        else {
+            let toastMsg = "Please fix the following errors before submitting:\n" + formErrs.join('\n');
+            Toast.showLongCenter(toastMsg);
+        }
     };
 
     render() {
@@ -353,10 +402,12 @@ export default class EventEditor extends Component<Props> {
 
 
                         {/*START SUBMIT SECTION*/}
-                        <View style={styles.section}>
-                            <Button
-                                text="Create"
-                                onPress={this.submitEvent.bind(this)} />
+                        <View style={[styles.section, {alignItems:'center'}]}>
+                            <View style={{width: 155}}>
+                                <Button
+                                    text="Create Your Event"
+                                    onPress={this.submitEvent.bind(this)} />
+                            </View>
                         </View>
                         {/*END SUBMIT SECTION*/}
 
