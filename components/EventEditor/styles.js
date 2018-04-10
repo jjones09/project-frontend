@@ -51,7 +51,6 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
 
-
     sectionText: {
         color: colours.disabledText,
         fontSize: 16,
@@ -95,6 +94,14 @@ export default StyleSheet.create({
         justifyContent: 'space-between'
     },
 
+    game: {
+        marginLeft: 40,
+        marginRight: 40,
+        flexDirection: 'row',
+        alignItems:'center',
+        justifyContent: 'flex-start'
+    },
+
     locBtn: {
         marginTop: 10,
         marginLeft: 100,
@@ -115,4 +122,13 @@ export default StyleSheet.create({
         color: colours.disabledText,
         fontSize: 18
     },
+
+    gameImg: {
+        margin: 5,
+        height: 30,
+        width: 30,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: colours.disabledText
+    }
 });

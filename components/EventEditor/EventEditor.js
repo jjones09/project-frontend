@@ -135,7 +135,10 @@ export default class EventEditor extends Component<Props> {
     }
 
     toggleGameType() {
-        this.setState({playingBoard: !this.state.playingBoard});
+        this.setState({
+            playingBoard: !this.state.playingBoard,
+            selectedGames: []
+        });
     }
 
     getTypeSwitchStyle(compareBool) {
@@ -256,41 +259,56 @@ export default class EventEditor extends Component<Props> {
                                     value={this.state.playingBoard} />
                                 <Text style={this.getTypeSwitchStyle(true)}>Board Games</Text>
                             </View>
-                        </View>
-                        {/*END EVENT TYPE SECTION*/}
-
-                        {/*START GAMES SECTION*/}
-                        <View style={styles.section}>
-                            <Text style={styles.header}>Games</Text>
                             {this.getGames()}
                             <View style={styles.locBtn}>
                                 <Button
-                                    text="+ Add Games"
+                                    text="Add/Edit games"
                                     onPress={this.openGamePicker.bind(this)} />
                             </View>
-
                         </View>
                         {/*END GAMES SECTION*/}
 
-                        {/* START PHOTO SECTION */}
-                        <View style={styles.section}>
-                            <Text style={styles.header}>Image</Text>
-                            <View style={styles.tbContainer} >
-                                <Image style={styles.eventImg}
-                                       source={this.state.eventImg}/>
-                            </View>
 
+
+
+                        {/*START EVENT TYPE SECTION*/}
+                        <View style={styles.section}>
+                            <Text style={styles.header}>Games Type</Text>
                             <View style={styles.sideBySide}>
-                                <TextInput
-                                    editable={!this.state.imgSelected}
-                                    style={styles.tbUrlStyle}
-                                    autoGrow={false}
-                                    onChangeText={this.updateTempURL.bind(this)}
-                                    placeholder='Enter Image URL'
-                                />
-                                {this.getImgBtn()}
+                                <Text style={this.getTypeSwitchStyle(false)}>Video Games</Text>
+                                <Switch
+                                    onTintColor={colours.disabledText}
+                                    tintColor={colours.disabledText}
+                                    thumbTintColor={colours.primaryButtonBackground}
+                                    onValueChange={this.toggleGameType.bind(this)}
+                                    value={this.state.playingBoard} />
+                                <Text style={this.getTypeSwitchStyle(true)}>Board Games</Text>
                             </View>
                         </View>
+                        {/*END EVENT TYPE SECTION*/}
+
+
+
+
+                        {/* START PHOTO SECTION */}
+
+                        {/*<View style={styles.section}>*/}
+                            {/*<Text style={styles.header}>Image</Text>*/}
+                            {/*<View style={styles.tbContainer} >*/}
+                                {/*<Image style={styles.eventImg}*/}
+                                       {/*source={this.state.eventImg}/>*/}
+                            {/*</View>*/}
+                            {/*<View style={styles.game}>*/}
+                                {/*<TextInput*/}
+                                    {/*editable={!this.state.imgSelected}*/}
+                                    {/*style={styles.tbUrlStyle}*/}
+                                    {/*autoGrow={false}*/}
+                                    {/*onChangeText={this.updateTempURL.bind(this)}*/}
+                                    {/*placeholder='Enter Image URL'*/}
+                                {/*/>*/}
+                                {/*{this.getImgBtn()}*/}
+                            {/*</View>*/}
+                        {/*</View>*/}
                         {/* END PHOTO SECTION */}
 
 
@@ -301,29 +319,15 @@ export default class EventEditor extends Component<Props> {
     };
 
     getGames() {
-        let games = this.state.selectedGames.map((game, i) => {
+        return this.state.selectedGames.map((game, i) => {
             return (
-                <View key={i} style={styles.gameResult}>
+                <View key={i} style={styles.game}>
                     <Image
-                        style={{
-                            margin: 5,
-                            height: 30,
-                            width: 30,
-                            borderRadius: 5,
-                            borderWidth: 1,
-                            borderColor: colours.disabledText
-                        }}
-                        source={{
-                            uri: game.image
-                        }}
-                    />
-                    <Text>{game.name}</Text>
+                        style={styles.gameImg}
+                        source={{uri: game.image}} />
+                    <Text style={{textAlign: 'left'}}>{game.name}</Text>
                 </View>
             );
         });
-        return (<View>
-            {games}
-        </View>);}
-
-
+    }
 }

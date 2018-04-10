@@ -62,6 +62,7 @@ export default class LoginButton extends Component<props> {
     // Remove items from AsyncStorage
     // TODO: THIS COULD PROBABLY BE MOVED TO A CENTRAL SESSION MANAGEMENT
     logOut = () => {
+        LoginManager.logOut();
         AsyncStorage.removeItem('userName');
         AsyncStorage.removeItem('profileImgUrl');
         this.setState({'btnText': 'Log in with Facebook'});

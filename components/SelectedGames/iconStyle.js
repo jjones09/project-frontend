@@ -1,6 +1,6 @@
 import {colours} from "../common/styles";
 
 export default {
-    size: 25,
-    color: colours.invertedButtonText
+    size: 30,
+    color: colours.primaryBackground
 };

@@ -12,7 +12,10 @@ export default class DraggableGame extends Component<Props> {
         super(props);
 
         this.state = {
-            pan: new Animated.ValueXY()
+            showDraggable: true,
+            dropAreaValues: null,
+            pan: new Animated.ValueXY(),
+            opacity: new Animated.Value(1)
         };
     };
 
@@ -26,13 +29,43 @@ export default class DraggableGame extends Component<Props> {
                 null, { dx: this.state.pan.x, dy: this.state.pan.y}
             ]),
             onPanResponderRelease: (e, gesture) => {
-                Animated.spring(this.state.pan, {
-                    toValue: {x: 0, y: 0},
-                    friction: 8
-                }).start();
+
+                if (this.isDropArea(gesture)) {
+
+                    Animated.timing(this.state.opacity, {
+                        toValue: 0,
+                        duration: 300
+                    });
+
+                    let listProp = this.props.thatProp;
+                    let games = this.props.that.state[listProp];
+                    games.splice(this.props.index, 1);
+                    console.log(JSON.stringify(games));
+                    this.props.that.setState({
+                        [listProp]: games
+                    });
+
+                    this.state.pan.setValue({x:0, y:0});
+                    this.state.opacity.setValue(new Animated.Value(1))
+                }
+
+                else {
+                    Animated.spring(this.state.pan, {
+                        toValue: {x: 0, y: 0},
+                        friction: 8
+                    }).start();
+                }
             }
         });
         this.state.pan.setValue({x:0, y:0});
+    }
+
+    isDropArea(gesture) {
+        return (
+            gesture.moveY > 520 &&
+            gesture.moveX > 140 &&
+            gesture.moveX < 220
+        );
     }
 
     render() {
