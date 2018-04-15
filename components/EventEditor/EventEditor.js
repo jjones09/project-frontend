@@ -17,19 +17,57 @@ export default class EventEditor extends Component<Props> {
     constructor(props) {
         super(props);
 
-        this.state = {
-            eventTitle: '',
-            eventDate: '',
-            today: new Date(),
-            location: '',
-            description: '',
-            playingBoard: false,
-            selectedGames: [],
-            forGlory: false,
-            publicEvent: false,
-            showModal: false
-        };
+        this.state = this.props.initialVals ? {
+                eventTitle: this.props.initialVals.title,
+                eventDate: this.props.initialVals.dateTime,
+                today: new Date(),
+                location: this.props.initialVals.location,
+                description: this.props.initialVals.description,
+                playingBoard: this.props.initialVals.playingBoard,
+                selectedGames: this.props.initialVals.games,
+                forGlory: this.props.initialVals.forGlory,
+                publicEvent: this.props.initialVals.publicEvent,
+                showModal: false,
+                eventID: this.props.initialVals.id
+            } :
+            {
+                eventTitle: '',
+                eventDate: '',
+                today: new Date(),
+                location: '',
+                description: '',
+                playingBoard: false,
+                selectedGames: [],
+                forGlory: false,
+                publicEvent: false,
+                showModal: false
+            };
     };
+
+    componentDidMount() {
+        this.fetchData().done();
+    }
+
+    async fetchData() {
+        if (this.state.selectedGames.length > 0) {
+            let games = this.state.selectedGames;
+            console.log('Getting games');
+            let promises = games.map(gameID => {
+                return new Promise((resolve, reject) => {
+                    api.searchGames(
+                        (this.state.playingBoard ? 'board' : 'video'),
+                        'id=' + gameID
+                    ).then(game => {
+                        resolve(game);
+                    })
+                });
+            });
+
+            Promise.all(promises).then(gameDetails => {
+               this.setState({selectedGames: gameDetails});
+            });
+        }
+    }
 
     // Updates the saved title for the event
     updateStateTitle(val) {
@@ -202,6 +240,30 @@ export default class EventEditor extends Component<Props> {
         }
     };
 
+    submitEdits () {
+
+        let formErrs = this.validateParams();
+
+        if (formErrs.length === 0) {
+            let eventObj = {
+                title: this.state.eventTitle,
+                dateTime: this.state.eventDate,
+                location: this.state.location,
+                description: this.state.description,
+                playingBoard: this.state.playingBoard,
+                games: this.state.selectedGames.map(game => game.id),
+                forGlory: this.state.forGlory,
+                publicEvent: this.state.publicEvent
+            };
+
+            api.editEvent(eventObj, this.state.eventID);
+        }
+        else {
+            let toastMsg = "Please fix the following errors before submitting:\n" + formErrs.join('\n');
+            Toast.showLongCenter(toastMsg);
+        }
+    };
+
     render() {
         return (
             <View style={{flex: 1, flexDirection: 'row'}}>
@@ -237,6 +299,7 @@ export default class EventEditor extends Component<Props> {
                                     maxLength={100}
                                     onChangeText={this.updateStateTitle.bind(this)}
                                     placeholder="Give your event a name"
+                                    value={this.state.eventTitle}
                                 />
                             </View>
                             <View>
@@ -311,6 +374,7 @@ export default class EventEditor extends Component<Props> {
                                     numberOfLines={4}
                                     onChangeText={this.updateStateDescription.bind(this)}
                                     placeholder="Let everyone know a bit more about what they can expect"
+                                    value={this.state.description}
                                 />
                             </View>
                             <View>
@@ -403,11 +467,7 @@ export default class EventEditor extends Component<Props> {
 
                         {/*START SUBMIT SECTION*/}
                         <View style={[styles.section, {alignItems:'center'}]}>
-                            <View style={{width: 155}}>
-                                <Button
-                                    text="Create Your Event"
-                                    onPress={this.submitEvent.bind(this)} />
-                            </View>
+                            {this.getSubmitButton()}
                         </View>
                         {/*END SUBMIT SECTION*/}
 
@@ -416,4 +476,18 @@ export default class EventEditor extends Component<Props> {
             </View>
         );
     };
+
+    getSubmitButton() {
+        return this.state.eventID ?
+            (<View style={{width: 130}}>
+                <Button
+                    text="Save Changes"
+                    onPress={this.submitEdits.bind(this)} />
+            </View>) :
+            (<View style={{width: 155}}>
+                <Button
+                    text="Create Your Event"
+                    onPress={this.submitEvent.bind(this)} />
+            </View>);
+    }
 }

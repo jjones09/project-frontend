@@ -3,12 +3,11 @@ import {AsyncStorage, ScrollView, StyleSheet, View} from 'react-native';
 import { Icon } from 'react-native-elements';
 
 import SignedIn from "../components/SignedIn";
-import ProfileInfo from "../components/ProfileInfo";
 import { colours } from "../components/common/styles";
-import InterestedIn from "../components/InterestedIn/InterestedIn";
-import ModalWrapper from "../components/ModalWrapper/ModalWrapper";
-import Button from "../components/Button/Button";
-import MyBio from "../components/MyBio/MyBio";
+import InterestedIn from "../components/InterestedIn";
+import ModalWrapper from "../components/ModalWrapper";
+import Button from "../components/Button";
+import MyBio from "../components/MyBio";
 import Location from "../components/Location";
 
 export default class Profile extends Component<Props> {
@@ -49,7 +48,6 @@ export default class Profile extends Component<Props> {
                     />
                     <SignedIn />
                     <MyBio />
-                    {/*<ProfileInfo/>*/}
                     <Location />
                     <Button text='Edit Preferences' onPress={this.openEventCreator.bind(this)}/>
                 </View>

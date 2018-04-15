@@ -67,7 +67,7 @@ export default class GamePicker extends Component<Props> {
         this.refs.search.blur();
 
         // Get results from REST API
-        api.searchGames(this.getEventType(), this.state.query).then(results => {
+        api.searchGames(this.getEventType(), 'title=' + this.state.query).then(results => {
 
             // Add results to state, and disable spinner
             this.setState({

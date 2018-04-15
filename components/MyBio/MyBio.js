@@ -69,8 +69,7 @@ export default class MyBio extends Component<Props> {
                             <Icon color={icon.color} name='cross' type='entypo' size={icon.size}/>
                         </TouchableOpacity>
                     </View>
-
-        )
+            )
         }
     }
 
