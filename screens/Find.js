@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
-import {AsyncStorage, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, Animated, StyleSheet, Text, View} from 'react-native';
 
 import { colours } from "../components/common/styles";
 import { Icon } from 'react-native-elements';
+
+import api from "../lib/api-interface/apiInterface";
+import EventCard from "../components/EventCard";
 
 export default class Find extends Component<Props> {
     static navigationOptions = {
@@ -13,25 +16,84 @@ export default class Find extends Component<Props> {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            loading: true,
+            events: [],
+            eventIndex: 0
+        }
     };
+
+    componentWillMount() {
+        this.fetchData().done();
+    }
+
+    async fetchData() {
+        navigator.geolocation.getCurrentPosition((data) => {
+
+            api.getAvailableEvents(data.coords.latitude, data.coords.longitude)
+            .then(res => {
+                console.log(res);
+                this.setState({
+                    loading: false,
+                    events: res.events,
+                    eventIndex: 0
+                });
+            });
+        });
+    }
+
+    nextCard = () => {
+        this.setState({eventIndex: this.state.eventIndex + 1});
+    };
+
+    getEventCards() {
+
+        const {events, eventIndex} = this.state;
+
+        return events.slice(eventIndex, eventIndex + 4).reverse().map(event => {
+            return (
+                <EventCard
+                    key={event._id}
+                    title={event.title}
+                    image={event.image}
+                    onSwipe={this.nextCard}
+                />);
+        });
+    }
 
     render() {
 
-        return (
-            <View style={styles.container}>
-                <Text>
-                    Find page
-                </Text>
-
+        return this.state.loading ? (
+            <View style={styles.searchingContainer}>
+                <Text style={styles.searchingTxt}>Finding events</Text>
+                <ActivityIndicator size='large' color={colours.primaryText} />
+            </View>
+        ) : (
+            <View style={styles.cardContainer}>
+                {this.getEventCards()}
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
+    searchingContainer: {
         flex: 1,
-        paddingTop: 20,
+        alignContent: 'center',
+        justifyContent: 'center',
         backgroundColor: colours.primaryBackground
-    }
+    },
+    searchingTxt: {
+        textAlign: 'center',
+        color: colours.primaryText,
+        fontSize: 24,
+        margin: 10
+    },
+    cardContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignContent: 'center',
+        backgroundColor: colours.primaryBackground
+    },
 });

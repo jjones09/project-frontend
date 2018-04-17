@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {AsyncStorage, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import { colours } from "../components/common/styles";
 import Button from "../components/Button";
@@ -33,8 +33,12 @@ export default class Host extends Component<Props> {
     async fetchData() {
         api.getHostingEvents().then(res => {
             console.log(res);
-           this.setState({hosting: res});
+            this.setState({hosting: res});
         });
+    }
+
+    closeModal() {
+        this.setState({showModal: false});
     }
 
     render() {
@@ -42,10 +46,14 @@ export default class Host extends Component<Props> {
             <View style={styles.container}>
                 <ModalWrapper
                     title={this.state.modalTitle}
-                    that={this}
+                    onClose={this.closeModal.bind(this)}
                     vis={this.state.showModal}
-                    contents={<EventEditor initialVals={this.state.modalParams}/>}
-
+                    contents={
+                        <EventEditor
+                            initialVals={this.state.modalParams}
+                            onSave={this.closeModal.bind(this)}
+                        />
+                    }
                 />
                 <View style={styles.header}>
                     {this.getHostingText()}
@@ -55,7 +63,11 @@ export default class Host extends Component<Props> {
                         {this.getEvents()}
                     </ScrollView>
                 </View>
-                <Button text='Create new event' onPress={this.openEventCreator.bind(this)}/>
+
+                <View style={{position: 'absolute', top: 450}}>
+                    <Button text='Create new event' onPress={this.openEventCreator.bind(this)}/>
+                </View>
+
             </View>
         );
     };
@@ -133,7 +145,7 @@ const styles = StyleSheet.create({
     },
     header: {
         width: 350,
-        marginVertical: 40,
+        marginVertical: 20,
     },
     eventsList: {
         height: 280,
@@ -141,7 +153,7 @@ const styles = StyleSheet.create({
     },
     event: {
         margin: 10,
-        width: 250,
+        width: 300,
         alignContent: 'flex-start'
     },
     eventTitle: {
@@ -154,8 +166,8 @@ const styles = StyleSheet.create({
     },
     eventImg: {
         margin: 5,
-        height: 50,
-        width: 50,
+        height: 60,
+        width: 60,
         borderRadius: 5,
         borderWidth: 1,
         borderColor: colours.disabledText

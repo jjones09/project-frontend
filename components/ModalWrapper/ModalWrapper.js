@@ -21,8 +21,7 @@ export default class ModalWrapper extends Component<Props> {
                 style={{position: 'absolute'}}>
                 <View style={styles.containerHead}>
                     <Text style={styles.title}>{this.props.title}</Text>
-                    <TouchableOpacity style={styles.cancel} onPress={() => {
-                        this.props.that.setState({showModal: false});}}>
+                    <TouchableOpacity style={styles.cancel} onPress={this.props.onClose}>
                         <Icon name='cross'
                               type='entypo'
                               size={cancelStyle.size}

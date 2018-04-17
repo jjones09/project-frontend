@@ -26,11 +26,11 @@ export default class SelectedGames extends Component<Props> {
 
                 // DRAGGABLE GAME IMAGE
                 return (<DraggableGame
-                            key={i}
-                            index={i}
-                            image={game.image}
-                            that={this.props.that}
-                            thatProp={this.props.thatProp}
+                    key={i}
+                    index={i}
+                    image={game.image}
+                    that={this.props.that}
+                    thatProp={this.props.thatProp}
                 />);
             });
         }

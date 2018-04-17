@@ -5,6 +5,8 @@ export const colours = {
     // BACKGROUND
     primaryBackground: color.paperGrey100.color,
     invertedBackground: color.paperTeal300.color,
+    cardBackground: color.paperTeal200.color,
+    cardBorder: color.paperTeal50.color,
 
     // BUTTON BACKGROUNDS
     invertedButtonBackground: color.paperGrey200.color,

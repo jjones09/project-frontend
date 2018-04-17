@@ -3,6 +3,7 @@ import {AsyncStorage, Text, TextInput, TouchableOpacity, View} from 'react-nativ
 import { Icon } from 'react-native-elements';
 import styles from './styles';
 import icon from "./iconStyle";
+import * as Toast from "@remobile/react-native-toast/index";
 
 const api = require("../../lib/api-interface/apiInterface");
 
@@ -45,11 +46,18 @@ export default class MyBio extends Component<Props> {
     saveBioEdits() {
         if (this.state.bio !== this.state.changes) {
             this.setState({bio: this.state.changes});
-            AsyncStorage.getItem('uID').then(uID => {
-                api.setUserBio(uID, this.state.bio);
+
+            api.setUserBio(this.state.changes).then(result => {
+                if (result.updated) {
+                    this.setState({bio: this.state.changes});
+                }
+                else {
+                    Toast.showShortCenter('There was an error, please try again');
+                }
+                this.toggleEditable();
             });
+
         }
-        this.toggleEditable();
     }
 
     includeIcons() {

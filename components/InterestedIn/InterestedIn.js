@@ -150,7 +150,7 @@ export default class InterestedIn extends Component<props> {
     }
 
     saveChanges() {
-        console.log('saving changes!');
+
         let updates = {
             seeVideo: this.state.seeVideo,
             seeBoard: this.state.seeBoard,

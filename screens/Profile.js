@@ -37,12 +37,16 @@ export default class Profile extends Component<Props> {
         this.setState({showModal: true});
     };
 
+    closeModal = () => {
+        this.setState({showModal: false});
+    };
+
     render() {
         return (
             <ScrollView style={{flex: 1}}>
                 <View style={styles.container}>
                     <ModalWrapper title='Edit Preferences'
-                                  that={this}
+                                  onClose={this.closeModal.bind(this)}
                                   vis={this.state.showModal}
                                   contents={<InterestedIn/>}
                     />

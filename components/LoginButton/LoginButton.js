@@ -3,13 +3,12 @@ import {AsyncStorage, NetInfo, Text, TouchableOpacity} from 'react-native';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
 import { Icon } from 'react-native-elements';
 
-let Toast = require('@remobile/react-native-toast');
-
 import styles from './styles';
 import iconStyle from './iconStyle';
 import { dev } from "../../config/apiURL";
-
 import api from '../../lib/api-interface/apiInterface';
+
+let Toast = require('@remobile/react-native-toast');
 
 export default class LoginButton extends Component<props> {
 
@@ -63,31 +62,25 @@ export default class LoginButton extends Component<props> {
     // TODO: THIS COULD PROBABLY BE MOVED TO A CENTRAL SESSION MANAGEMENT
     logOut = () => {
         LoginManager.logOut();
-        AsyncStorage.removeItem('userName');
-        AsyncStorage.removeItem('profileImgUrl');
+        AsyncStorage.clear();
         this.setState({'btnText': 'Log in with Facebook'});
     };
 
     // Log in the user
     continue = async () => {
-        let isConnected = await this.checkConnection();
-        if (isConnected) {
-            AsyncStorage.getItem('appID').then(tkn => {
-                AsyncStorage.getItem('uID').then(uID => {
-                    console.log('app ID is ' + tkn);
-                    console.log('uID is ' + uID);
-                    api.verifyUserToken(uID, tkn).then(res => {
-                        console.log('VALID USER - ' + res.validUser);
-                        if (res.validUser) {
-                            this.props.navigate('Hub', {});
-                        }
-                        else {
-                            Toast.showShortCenter('Please reauthenticate through Facebook');
-                            this.logOut();
-                        }
-                    });
-                });
-            })
+
+        if (api.connectionAvailable()) {
+
+            api.logIn().then(res => {
+
+                if (!res.error) {
+                    this.props.navigate('Hub', {});
+                }
+                else {
+                    Toast.showShortCenter('Please reauthenticate through Facebook');
+                    this.logOut();
+                }
+            });
         }
         else {
             Toast.showShortCenter('Your device is not connected to the internet.' +
@@ -124,17 +117,30 @@ export default class LoginButton extends Component<props> {
     }
 
     logIn = () => {
-        LoginManager.logInWithReadPermissions(['public_profile', 'user_photos']).then((res) => {
+
+        LoginManager.logInWithReadPermissions(['public_profile', 'user_friends', 'user_photos']).then((res) => {
                 if (!res.isCancelled) {
+
                     console.log('Login successful. Permissions: %s', res.grantedPermissions.toString());
+
                     AccessToken.getCurrentAccessToken().then(data => {
-                            console.log('Token obtained. Verifying with server');
-                            api.requestUserToken(data.accessToken).then(res => {
-                                AsyncStorage.setItem('userName', res.user);
-                                        AsyncStorage.setItem('uID', data.userID);
-                                        AsyncStorage.setItem('appID', res.token);
-                                        this.props.navigate('Hub', {});
-                                        this.setState({'btnText': 'Continue as ' + res.user.split(' ')[0]});
+
+                            AsyncStorage.setItem('uID', data.userID);
+
+                            api.logIn(data.accessToken).then(res => {
+
+                                if (!res.error) {
+
+                                    AsyncStorage.setItem('userName', res.user);
+                                    AsyncStorage.setItem('appID', res.token);
+
+                                    this.props.navigate('Hub', {});
+                                    this.setState({'btnText': 'Continue as ' + res.user.split(' ')[0]});
+                                }
+                                else {
+                                    this.logOut();
+                                    Toast.showShortCenter('There was an error, please try again');
+                                }
                             });
                         }
                     )

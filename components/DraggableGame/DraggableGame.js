@@ -40,7 +40,7 @@ export default class DraggableGame extends Component<Props> {
                     let listProp = this.props.thatProp;
                     let games = this.props.that.state[listProp];
                     games.splice(this.props.index, 1);
-                    console.log(JSON.stringify(games));
+
                     this.props.that.setState({
                         [listProp]: games
                     });

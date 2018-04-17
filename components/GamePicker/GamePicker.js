@@ -85,7 +85,7 @@ export default class GamePicker extends Component<Props> {
         // If there is an active search, show the activity indicator spinner
         if (this.state.searching) {
             results = (
-                <ActivityIndicator size='small' color={colours.primaryText} />
+                <ActivityIndicator size='large' color={colours.primaryText} />
             );
         }
         else {

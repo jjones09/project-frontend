@@ -12,19 +12,6 @@ export default class SecondScreen extends Component<Props> {
 
     constructor(props) {
         super(props);
-        AsyncStorage.getItem('userName').then(value => {
-            this.setState({'name': value});
-        });
-        navigator.geolocation.getCurrentPosition((data) => {
-            this.setState({'location': {
-                lat: data.coords.latitude,
-                lon: data.coords.longitude }});
-        });
-    };
-
-    state = {
-        name: '',
-        location: {}
     };
 
     render() {

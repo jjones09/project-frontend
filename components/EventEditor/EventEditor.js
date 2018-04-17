@@ -51,7 +51,7 @@ export default class EventEditor extends Component<Props> {
     async fetchData() {
         if (this.state.selectedGames.length > 0) {
             let games = this.state.selectedGames;
-            console.log('Getting games');
+
             let promises = games.map(gameID => {
                 return new Promise((resolve, reject) => {
                     api.searchGames(
@@ -81,7 +81,7 @@ export default class EventEditor extends Component<Props> {
     openSearchModal() {
         RNGooglePlaces.openAutocompleteModal()
             .then(place => {
-                console.log('place - ' + JSON.stringify(place));
+
                 this.setState({
                     location: {
                         lat: place.latitude,
@@ -216,51 +216,50 @@ export default class EventEditor extends Component<Props> {
         return errs;
     }
 
-    submitEvent () {
+    getEventObj () {
+        console.log(JSON.stringify(this.state));
+        return {
+            title: this.state.eventTitle,
+            dateTime: this.state.eventDate,
+            location: this.state.location,
+            description: this.state.description,
+            playingBoard: this.state.playingBoard,
+            games: this.state.selectedGames.map(game => game.id),
+            forGlory: this.state.forGlory,
+            publicEvent: this.state.publicEvent,
+            image: this.state.selectedGames[0].image
+        };
+    }
 
+    showFormErrors(errs) {
+        let toastMsg = "Please fix the following errors before submitting:\n" + errs.join('\n');
+        Toast.showLongCenter(toastMsg);
+    }
+
+    submitEvent () {
         let formErrs = this.validateParams();
 
         if (formErrs.length === 0) {
-            let eventObj = {
-                title: this.state.eventTitle,
-                dateTime: this.state.eventDate,
-                location: this.state.location,
-                description: this.state.description,
-                playingBoard: this.state.playingBoard,
-                games: this.state.selectedGames.map(game => game.id),
-                forGlory: this.state.forGlory,
-                publicEvent: this.state.publicEvent
-            };
+            let eventObj = this.getEventObj();
 
             api.createEvent(eventObj);
+            this.props.onSave();
         }
         else {
-            let toastMsg = "Please fix the following errors before submitting:\n" + formErrs.join('\n');
-            Toast.showLongCenter(toastMsg);
+            this.showFormErrors(formErrs);
         }
     };
 
     submitEdits () {
-
         let formErrs = this.validateParams();
-
         if (formErrs.length === 0) {
-            let eventObj = {
-                title: this.state.eventTitle,
-                dateTime: this.state.eventDate,
-                location: this.state.location,
-                description: this.state.description,
-                playingBoard: this.state.playingBoard,
-                games: this.state.selectedGames.map(game => game.id),
-                forGlory: this.state.forGlory,
-                publicEvent: this.state.publicEvent
-            };
+            let eventObj = this.getEventObj();
 
             api.editEvent(eventObj, this.state.eventID);
+            this.props.onSave();
         }
         else {
-            let toastMsg = "Please fix the following errors before submitting:\n" + formErrs.join('\n');
-            Toast.showLongCenter(toastMsg);
+            this.showFormErrors(formErrs);
         }
     };
 
