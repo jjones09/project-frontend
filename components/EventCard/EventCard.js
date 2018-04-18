@@ -9,6 +9,7 @@ import api from '../../lib/api-interface/apiInterface';
 import UserPic from "../UserPic";
 import Button from "../Button";
 import ModalWrapper from "../ModalWrapper";
+import EventDetails from "../EventDetails";
 
 export default class EventCard extends Component<Props> {
 
@@ -102,7 +103,7 @@ export default class EventCard extends Component<Props> {
                     onClose={this.closeModal.bind(this)}
                     vis={this.state.showModal}
                     contents={
-                        <Text>{JSON.stringify(event)}</Text>
+                        <EventDetails event={event}/>
                     }
                 />
 
