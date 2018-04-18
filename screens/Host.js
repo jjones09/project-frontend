@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import { colours } from "../components/common/styles";
 import Button from "../components/Button";
@@ -38,12 +38,21 @@ export default class Host extends Component<Props> {
     }
 
     closeModal() {
-        this.setState({showModal: false});
+        Alert.alert(
+            'Are you sure you want to exit?',
+            'Any unsaved changes will be lost',
+            [
+                {text: 'No', style: 'cancel'},
+                {text: 'Yes', onPress: () => this.setState({showModal: false})}
+            ],
+            {cancelable: false}
+        )
     }
 
     render() {
         return (
             <View style={styles.container}>
+
                 <ModalWrapper
                     title={this.state.modalTitle}
                     onClose={this.closeModal.bind(this)}
@@ -55,6 +64,7 @@ export default class Host extends Component<Props> {
                         />
                     }
                 />
+
                 <View style={styles.header}>
                     {this.getHostingText()}
                 </View>
@@ -148,7 +158,7 @@ const styles = StyleSheet.create({
         marginVertical: 20,
     },
     eventsList: {
-        height: 280,
+        height: 320,
         marginBottom: 20
     },
     event: {

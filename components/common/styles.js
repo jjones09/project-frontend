@@ -23,5 +23,6 @@ export const colours = {
     primaryText: color.paperTeal400.color,
     subHeader: color.paperGrey600.color,
     disabledText: color.paperGrey500.color,
-    notificationText: color.paperGrey300.color
+    notificationText: color.paperGrey300.color,
+    passEventText: color.paperRed400.color
 };

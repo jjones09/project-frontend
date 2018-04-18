@@ -20,8 +20,12 @@ export default class Find extends Component<Props> {
         this.state = {
             loading: true,
             events: [],
-            eventIndex: 0
-        }
+            eventIndex: 0,
+            deviceLocation: {},
+            dragging: false
+        };
+
+        this.opacity = new Animated.Value(0);
     };
 
     componentWillMount() {
@@ -30,10 +34,13 @@ export default class Find extends Component<Props> {
 
     async fetchData() {
         navigator.geolocation.getCurrentPosition((data) => {
+            this.setState({deviceLocation: {
+                lat: data.coords.latitude,
+                    long: data.coords.longitude
+            }});
 
             api.getAvailableEvents(data.coords.latitude, data.coords.longitude)
             .then(res => {
-                console.log(res);
                 this.setState({
                     loading: false,
                     events: res.events,
@@ -42,6 +49,21 @@ export default class Find extends Component<Props> {
             });
         });
     }
+
+    onStartDrag = () => {
+        this.setState({dragging: true});
+
+        Animated.timing(this.opacity, {
+            duration: 500, toValue: 0.9
+        }).start();
+    };
+
+    onStopDrag = () => {
+
+        Animated.timing(this.opacity, {
+            duration: 300, toValue: 0
+        }).start(this.setState({dragging: false}));
+    };
 
     nextCard = () => {
         this.setState({eventIndex: this.state.eventIndex + 1});
@@ -55,11 +77,55 @@ export default class Find extends Component<Props> {
             return (
                 <EventCard
                     key={event._id}
-                    title={event.title}
-                    image={event.image}
+                    event={event}
+                    deviceLocation={this.state.deviceLocation}
                     onSwipe={this.nextCard}
+                    onStartSwipe={this.onStartDrag}
+                    onStopSwipe={this.onStopDrag}
                 />);
         });
+    }
+
+    showPlay() {
+        if (this.state.dragging) {
+            return (<Animated.Text style={{
+                position: 'absolute',
+                top: 20,
+                width: '100%',
+                zIndex: 5,
+                fontSize: 38,
+                textAlign: 'center',
+                color: colours.primaryText,
+                opacity: this.opacity.interpolate({
+                    inputRange: [0, 0.9],
+                    outputRange: [0, 0.9],
+                    extrapolate: 'clamp'
+                })
+            }}>
+                ▲ PLAY
+            </Animated.Text>);
+        }
+    }
+
+    showPass() {
+        if (this.state.dragging) {
+            return (<Animated.Text style={[{
+                position: 'absolute',
+                bottom: 20,
+                width: '100%',
+                zIndex: 5,
+                fontSize: 35,
+                textAlign: 'center',
+                color: colours.passEventText,
+                opacity: this.opacity.interpolate({
+                    inputRange: [0, 0.7],
+                    outputRange: [0, 0.7],
+                    extrapolate: 'clamp'
+                })
+            }, ]}>
+                ▼ PASS
+            </Animated.Text>);
+        }
     }
 
     render() {
@@ -71,7 +137,9 @@ export default class Find extends Component<Props> {
             </View>
         ) : (
             <View style={styles.cardContainer}>
+                {this.showPlay()}
                 {this.getEventCards()}
+                {this.showPass()}
             </View>
         );
     }

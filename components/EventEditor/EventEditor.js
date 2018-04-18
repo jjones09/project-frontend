@@ -18,30 +18,30 @@ export default class EventEditor extends Component<Props> {
         super(props);
 
         this.state = this.props.initialVals ? {
-                eventTitle: this.props.initialVals.title,
-                eventDate: this.props.initialVals.dateTime,
-                today: new Date(),
-                location: this.props.initialVals.location,
-                description: this.props.initialVals.description,
-                playingBoard: this.props.initialVals.playingBoard,
-                selectedGames: this.props.initialVals.games,
-                forGlory: this.props.initialVals.forGlory,
-                publicEvent: this.props.initialVals.publicEvent,
-                showModal: false,
-                eventID: this.props.initialVals.id
-            } :
-            {
-                eventTitle: '',
-                eventDate: '',
-                today: new Date(),
-                location: '',
-                description: '',
-                playingBoard: false,
-                selectedGames: [],
-                forGlory: false,
-                publicEvent: false,
-                showModal: false
-            };
+            eventTitle: this.props.initialVals.title,
+            eventDate: this.props.initialVals.dateTime,
+            today: new Date(),
+            location: this.props.initialVals.location,
+            description: this.props.initialVals.description,
+            playingBoard: this.props.initialVals.playingBoard,
+            selectedGames: this.props.initialVals.games,
+            forGlory: this.props.initialVals.forGlory,
+            publicEvent: this.props.initialVals.publicEvent,
+            showModal: false,
+            eventID: this.props.initialVals.id
+        } :
+        {
+            eventTitle: '',
+            eventDate: '',
+            today: new Date(),
+            location: '',
+            description: '',
+            playingBoard: false,
+            selectedGames: [],
+            forGlory: false,
+            publicEvent: false,
+            showModal: false
+        };
     };
 
     componentDidMount() {
@@ -53,7 +53,7 @@ export default class EventEditor extends Component<Props> {
             let games = this.state.selectedGames;
 
             let promises = games.map(gameID => {
-                return new Promise((resolve, reject) => {
+                return new Promise(resolve => {
                     api.searchGames(
                         (this.state.playingBoard ? 'board' : 'video'),
                         'id=' + gameID
@@ -67,6 +67,11 @@ export default class EventEditor extends Component<Props> {
                this.setState({selectedGames: gameDetails});
             });
         }
+
+        RNGooglePlaces.getCurrentPlace()
+            .then(places => {
+                this.setState({deviceLocation: {lat: places[0].latitude, long: places[0].longitude}});
+            })
     }
 
     // Updates the saved title for the event
@@ -79,19 +84,22 @@ export default class EventEditor extends Component<Props> {
 
     // Open the google location picker
     openSearchModal() {
-        RNGooglePlaces.openAutocompleteModal()
-            .then(place => {
-
-                this.setState({
-                    location: {
-                        lat: place.latitude,
-                        long: place.longitude,
-                        name: place.name,
-                        address: place.address.split(', ')
-                    }
-                });
-            })
-            .catch(err => {console.log(err.message)});
+        RNGooglePlaces.openPlacePickerModal({
+            type: 'address',
+            latitude: this.state.deviceLocation.lat,
+            longitude: this.state.deviceLocation.long,
+            radius: 40
+        }).then(place => {
+            this.setState({
+                location: {
+                    lat: place.latitude,
+                    long: place.longitude,
+                    name: place.name,
+                    address: place.address.split(', ')
+                }
+            });
+        })
+        .catch(err => {console.log(err.message)});
     }
 
     // Clear the selected location from state
