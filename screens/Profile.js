@@ -14,7 +14,7 @@ export default class Profile extends Component<Props> {
     static navigationOptions = {
         title: 'Profile',
         header: null,
-        tabBarIcon: (<Icon size={20} color='#FFF' name='user' type='entypo'/>)
+        tabBarIcon: (<Icon size={24} color='#FFF' name='torso' type='foundation'/>)
     };
 
     constructor(props) {

@@ -271,13 +271,17 @@ export default class EventEditor extends Component<Props> {
         }
     };
 
+    closeModal() {
+        this.setState({showModal: false});
+    }
+
     render() {
         return (
             <View style={{flex: 1, flexDirection: 'row'}}>
 
                 <ModalWrapper
                     title='Add Games'
-                    that={this}
+                    onClose={this.closeModal.bind(this)}
                     vis={this.state.showModal}
                     contents={<GamePicker
                         playingBoard={this.state.playingBoard}

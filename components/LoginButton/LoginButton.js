@@ -138,8 +138,8 @@ export default class LoginButton extends Component<props> {
                                     this.setState({'btnText': 'Continue as ' + res.user.split(' ')[0]});
                                 }
                                 else {
-                                    this.logOut();
                                     Toast.showShortCenter('There was an error, please try again');
+                                    this.logOut();
                                 }
                             });
                         }

@@ -8,6 +8,10 @@ export default StyleSheet.create({
         marginTop: 15
     },
 
+    section: {
+        margin: 10
+    },
+
     header: {
         color: colours.primaryText,
         fontSize: 22,
@@ -77,6 +81,7 @@ export default StyleSheet.create({
         width: 180,
         height: 50,
         margin: 5,
+        marginBottom: 10,
         alignSelf: 'center',
         flexDirection: 'row',
         alignItems:'center',
@@ -86,5 +91,59 @@ export default StyleSheet.create({
     typeTxt: {
         color: colours.disabledText,
         fontSize: 20,
-    }
+    },
+
+    gameImg: {
+        margin: 5,
+        height: 50,
+        width: 50,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: colours.disabledText
+    },
+
+    gameTitle: {
+        marginHorizontal: 10,
+        width: 180,
+        fontSize: 16
+    },
+
+    game: {
+        alignSelf: 'center',
+        width: 300,
+        marginVertical: 5,
+        flexDirection: 'row',
+        alignItems:'center',
+        justifyContent: 'space-between'
+    },
+
+    playStyle: {
+        width: 140,
+        height: 50,
+        margin: 5,
+        alignSelf: 'center',
+        flexDirection: 'row',
+        alignItems:'center',
+        justifyContent: 'space-between'
+    },
+
+    playerIcon: {
+        margin: 5,
+        width: 180,
+        alignSelf: 'center',
+        flexDirection: 'row',
+        alignItems:'center',
+        justifyContent: 'space-between'
+    },
+
+    playerName: {
+        color: colours.disabledText,
+        fontSize: 16,
+    },
+
+    noAttend: {
+        color: colours.disabledText,
+        fontSize: 18,
+        textAlign: 'center',
+    },
 });

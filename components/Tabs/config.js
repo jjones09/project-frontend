@@ -7,6 +7,9 @@ export const config = {
         showIcon: 'true',
         style: {
             backgroundColor: colours.invertedBackground
+        },
+        labelStyle: {
+            fontSize: 10
         }
     },
     tabBarPosition: 'bottom',

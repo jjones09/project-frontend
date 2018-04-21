@@ -11,7 +11,7 @@ export default class Find extends Component<Props> {
     static navigationOptions = {
         title: 'Find',
         header: null,
-        tabBarIcon: (<Icon size={20} color='#FFF' name='magnifying-glass' type='entypo'/>)
+        tabBarIcon: (<Icon size={20} color='#FFF' name='page-multiple' type='foundation'/>)
     };
 
     constructor(props) {
@@ -41,6 +41,7 @@ export default class Find extends Component<Props> {
 
             api.getAvailableEvents(data.coords.latitude, data.coords.longitude)
             .then(res => {
+                console.log(JSON.stringify(res));
                 this.setState({
                     loading: false,
                     events: res.events,
@@ -84,6 +85,8 @@ export default class Find extends Component<Props> {
                     onStopSwipe={this.onStopDrag}
                 />);
         });
+
+
     }
 
     showPlay() {
@@ -126,6 +129,10 @@ export default class Find extends Component<Props> {
                 ▼ PASS
             </Animated.Text>);
         }
+    }
+
+    getEventNumber() {
+        return this.state.eventIndex + 1;
     }
 
     render() {

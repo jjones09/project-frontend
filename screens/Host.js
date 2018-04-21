@@ -12,8 +12,9 @@ import {Icon} from "react-native-elements";
 export default class Host extends Component<Props> {
 
     static navigationOptions = {
-        title: 'Host',
-        header: null
+        title: 'Hosting',
+        header: null,
+        tabBarIcon: (<Icon size={24} color='#FFF' name='home-map-marker' type='material-community'/>)
     };
 
     constructor(props) {
